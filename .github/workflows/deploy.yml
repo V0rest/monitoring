@@ -156,7 +156,7 @@ jobs:
       - if: github.event.inputs.destroy_infra == 'false'
         name: Run Ansible Playbook
         run: |
-          ansible-playbook --inventory ${{ env.ANSIBLE_INVENTORY_FILE }} --private-key /home/runner/monitoring.pem ansible_playbook.yml 
+          ansible-playbook --inventory ${{ env.ANSIBLE_INVENTORY_FILE }} --private-key /home/runner/monitoring.pem ansible_playbook.yml
 #/home/runner/monitoring.pem
 #${{ env.SSH_AUTH_SOCK }}
 
@@ -170,15 +170,15 @@ jobs:
           payload: |
             {
               "text": "GitHub Action result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}",
-              "blocks": [
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "GitHub Action result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
-                  }
-                }
-              ]
+    #          "blocks": [
+    #            {
+    #              "type": "section",
+    #              "text": {
+    #                "type": "mrkdwn",
+    #                "text": "GitHub Action result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
+    #              }
+    #            }
+    #          ]
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
