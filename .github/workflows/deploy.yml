@@ -113,19 +113,19 @@ jobs:
           aws ssm send-command --document-name "AWS-RunShellScript" --document-version "1" --targets Key=InstanceIds,Values=$INSTANCE_IDS --parameters '{"workingDirectory":[""],"executionTimeout":["3600"],"commands":["aws s3 sync s3://${{ env.BUCKET }}${{ env.REPO_DEPLOYMENT_PATH }} ${{ env.INSTANCE_DEPLOY_PATH }}", "echo GRAFANA_ADMIN_PASSWORD=${{ secrets.GRAFANA_ADMIN_PASSWORD }} >> ${{ env.INSTANCE_DEPLOY_PATH }}/.env"]}' --timeout-seconds 600 --max-concurrency "50" --max-errors "0"  --output-s3-bucket-name "${{ env.BUCKET }}" --output-s3-key-prefix "ssm_logs/Sync-S3-EC2" --region ${{ env.AWS_REGION }}
           aws ssm send-command --document-name "AWS-RunShellScript" --document-version "1" --targets Key=InstanceIds,Values=$INSTANCE_IDS --parameters '{"workingDirectory":[""],"executionTimeout":["3600"],"commands":["sleep 5","sudo chmod a+x ${{ env.INSTANCE_DEPLOY_PATH }}/install.sh & bash ${{ env.INSTANCE_DEPLOY_PATH }}/install.sh"]}' --timeout-seconds 600 --max-concurrency "50" --max-errors "0"  --output-s3-bucket-name "${{ env.BUCKET }}" --output-s3-key-prefix "ssm_logs/Run install" --region ${{ env.AWS_REGION }}
 
-
-      - name: webfactory/ssh-agent
-        uses: webfactory/ssh-agent@v0.5.4
-        with:
-          ssh-private-key: ${{ secrets.ANSIBLE_SSH_KEY }}
-
-
 #      - if: github.event.inputs.destroy_infra == 'false'
-#        name: Write SSH Key to Disk
-#        shell: bash
-#        run: |
-#          echo "${{ secrets.ANSIBLE_SSH_KEY }}" > /home/runner/monitoring.pem
-#          chmod 400 /home/runner/monitoring.pem
+#        name: webfactory/ssh-agent
+#        uses: webfactory/ssh-agent@v0.5.4
+#        with:
+#          ssh-private-key: ${{ secrets.ANSIBLE_SSH_KEY }}
+
+
+      - if: github.event.inputs.destroy_infra == 'false'
+        name: Write SSH Key to Disk
+        shell: bash
+        run: |
+          echo "${{ secrets.ANSIBLE_SSH_KEY }}" > /home/runner/monitoring.pem
+          chmod 400 /home/runner/monitoring.pem
 
       - if: github.event.inputs.destroy_infra == 'false'
         name: Cache Python Packages and Ansible
@@ -156,7 +156,9 @@ jobs:
       - if: github.event.inputs.destroy_infra == 'false'
         name: Run Ansible Playbook
         run: |
-          ansible-playbook --inventory ${{ env.ANSIBLE_INVENTORY_FILE }} --private-key ${{ env.SSH_AUTH_SOCK }} ansible_playbook.yml
+          ansible-playbook --inventory ${{ env.ANSIBLE_INVENTORY_FILE }} --private-key /home/runner/monitoring.pem ansible_playbook.yml 
+#/home/runner/monitoring.pem
+#${{ env.SSH_AUTH_SOCK }}
 
 
       - name: Send custom JSON data to Slack workflow
