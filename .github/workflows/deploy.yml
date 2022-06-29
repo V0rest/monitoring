@@ -11,11 +11,9 @@ on:
 env:
   AWS_REGION: eu-west-1
   BUCKET: office-monitoring
-  INSTANCE_PATH: /etc/monitoring
-  DEPLOYMENT_PATH: /local_deployment
-  INVENTORY_FILE: inventory.aws_ec2.yml
-  Monioring-Prometheus-Grafana_HOST_KEY_CHECKING: false
-  ANSIBLE_REMOTE_USER: ec2-user
+  INSTANCE_DEPLOY_PATH: /etc/monitoring
+  REPO_DEPLOYMENT_PATH: /local_deployment
+  ANSIBLE_INVENTORY_FILE: inventory.aws_ec2.yml
 
 jobs:
   terraform:
@@ -102,25 +100,25 @@ jobs:
       #- if: github.event.inputs.destroy_infra == 'false'
       #  name: Sync-to-S3
       #  run: |
-      #    aws s3 sync .${{ env.DEPLOYMENT_PATH }} s3://${{ env.BUCKET }}${{ env.DEPLOYMENT_PATH }}
-      #    aws ssm send-command --document-name "AWS-RunShellScript" --document-version "1" --targets Key=tag:Name,Values=MLFlow_Registry_Server --parameters '{"workingDirectory":[""],"executionTimeout":["3600"],"commands":["aws s3 sync s3://${{ env.BUCKET }}${{ env.DEPLOYMENT_PATH }} ${{ env.INSTANCE_PATH }}"]}' --timeout-seconds 600 --max-concurrency "50" --max-errors "0"  --output-s3-bucket-name "${{ env.BUCKET }}" --output-s3-key-prefix "ssm_logs/Sync-S3-EC2" --region ${{ env.AWS_REGION }}
-      #    aws ssm send-command --document-name "AWS-RunShellScript" --document-version "1" --targets Key=tag:Name,Values=MLFlow_Registry_Server --parameters '{"workingDirectory":[""],"executionTimeout":["3600"],"commands":["sleep 5","sudo chmod a+x ${{ env.INSTANCE_PATH }}/install.sh & bash ${{ env.INSTANCE_PATH }}/install.sh"]}' --timeout-seconds 600 --max-concurrency "50" --max-errors "0"  --output-s3-bucket-name "${{ env.BUCKET }}" --output-s3-key-prefix "ssm_logs/Run install" --region ${{ env.AWS_REGION }}
+      #    aws s3 sync .${{ env.REPO_DEPLOYMENT_PATH }} s3://${{ env.BUCKET }}${{ env.REPO_DEPLOYMENT_PATH }}
+      #    aws ssm send-command --document-name "AWS-RunShellScript" --document-version "1" --targets Key=tag:Name,Values=MLFlow_Registry_Server --parameters '{"workingDirectory":[""],"executionTimeout":["3600"],"commands":["aws s3 sync s3://${{ env.BUCKET }}${{ env.REPO_DEPLOYMENT_PATH }} ${{ env.INSTANCE_DEPLOY_PATH }}"]}' --timeout-seconds 600 --max-concurrency "50" --max-errors "0"  --output-s3-bucket-name "${{ env.BUCKET }}" --output-s3-key-prefix "ssm_logs/Sync-S3-EC2" --region ${{ env.AWS_REGION }}
+      #    aws ssm send-command --document-name "AWS-RunShellScript" --document-version "1" --targets Key=tag:Name,Values=MLFlow_Registry_Server --parameters '{"workingDirectory":[""],"executionTimeout":["3600"],"commands":["sleep 5","sudo chmod a+x ${{ env.INSTANCE_DEPLOY_PATH }}/install.sh & bash ${{ env.INSTANCE_DEPLOY_PATH }}/install.sh"]}' --timeout-seconds 600 --max-concurrency "50" --max-errors "0"  --output-s3-bucket-name "${{ env.BUCKET }}" --output-s3-key-prefix "ssm_logs/Run install" --region ${{ env.AWS_REGION }}
 
       # This job as a targets uses output from terraform and set to ssm aws cli
       - if: github.event.inputs.destroy_infra == 'false'
         name: Sync-to-S3
         run: |
           INSTANCE_IDS=${{ steps.apply.outputs.instance_id }}
-          aws s3 sync .${{ env.DEPLOYMENT_PATH }} s3://${{ env.BUCKET }}${{ env.DEPLOYMENT_PATH }}
-          aws ssm send-command --document-name "AWS-RunShellScript" --document-version "1" --targets Key=InstanceIds,Values=$INSTANCE_IDS --parameters '{"workingDirectory":[""],"executionTimeout":["3600"],"commands":["aws s3 sync s3://${{ env.BUCKET }}${{ env.DEPLOYMENT_PATH }} ${{ env.INSTANCE_PATH }}", "echo GRAFANA_ADMIN_PASSWORD=${{ secrets.GRAFANA_ADMIN_PASSWORD }} >> ${{ env.INSTANCE_PATH }}/.env"]}' --timeout-seconds 600 --max-concurrency "50" --max-errors "0"  --output-s3-bucket-name "${{ env.BUCKET }}" --output-s3-key-prefix "ssm_logs/Sync-S3-EC2" --region ${{ env.AWS_REGION }}
-          aws ssm send-command --document-name "AWS-RunShellScript" --document-version "1" --targets Key=InstanceIds,Values=$INSTANCE_IDS --parameters '{"workingDirectory":[""],"executionTimeout":["3600"],"commands":["sleep 5","sudo chmod a+x ${{ env.INSTANCE_PATH }}/install.sh & bash ${{ env.INSTANCE_PATH }}/install.sh"]}' --timeout-seconds 600 --max-concurrency "50" --max-errors "0"  --output-s3-bucket-name "${{ env.BUCKET }}" --output-s3-key-prefix "ssm_logs/Run install" --region ${{ env.AWS_REGION }}
+          aws s3 sync .${{ env.REPO_DEPLOYMENT_PATH }} s3://${{ env.BUCKET }}${{ env.REPO_DEPLOYMENT_PATH }}
+          aws ssm send-command --document-name "AWS-RunShellScript" --document-version "1" --targets Key=InstanceIds,Values=$INSTANCE_IDS --parameters '{"workingDirectory":[""],"executionTimeout":["3600"],"commands":["aws s3 sync s3://${{ env.BUCKET }}${{ env.REPO_DEPLOYMENT_PATH }} ${{ env.INSTANCE_DEPLOY_PATH }}", "echo GRAFANA_ADMIN_PASSWORD=${{ secrets.GRAFANA_ADMIN_PASSWORD }} >> ${{ env.INSTANCE_DEPLOY_PATH }}/.env"]}' --timeout-seconds 600 --max-concurrency "50" --max-errors "0"  --output-s3-bucket-name "${{ env.BUCKET }}" --output-s3-key-prefix "ssm_logs/Sync-S3-EC2" --region ${{ env.AWS_REGION }}
+          aws ssm send-command --document-name "AWS-RunShellScript" --document-version "1" --targets Key=InstanceIds,Values=$INSTANCE_IDS --parameters '{"workingDirectory":[""],"executionTimeout":["3600"],"commands":["sleep 5","sudo chmod a+x ${{ env.INSTANCE_DEPLOY_PATH }}/install.sh & bash ${{ env.INSTANCE_DEPLOY_PATH }}/install.sh"]}' --timeout-seconds 600 --max-concurrency "50" --max-errors "0"  --output-s3-bucket-name "${{ env.BUCKET }}" --output-s3-key-prefix "ssm_logs/Run install" --region ${{ env.AWS_REGION }}
 
 
       - if: github.event.inputs.destroy_infra == 'false'
         name: Write SSH Key to Disk
-        shell: pwsh
+        shell: bash
         run: |
-          Set-Content -Path monitoring.pem -Value '${{ secrets.ANSIBLE_SSH_KEY }}'
+          echo "${{ secrets.ANSIBLE_SSH_KEY }}" > /home/runner/monitoring.pem
           chmod 400 monitoring.pem
 
       - if: github.event.inputs.destroy_infra == 'false'
@@ -139,7 +137,7 @@ jobs:
         if: |
          github.event.inputs.destroy_infra == 'false' ||
          (steps.cachestuff.outputs.cache-hit != 'true')
-        shell: pwsh
+        shell: bash
         run: |
           pip3 install boto3 ansible
           ansible-galaxy collection install amazon.aws
@@ -147,12 +145,12 @@ jobs:
       - if: github.event.inputs.destroy_infra == 'false'
         name: Validate Ansible Inventory
         run: |
-          ansible-inventory --inventory ${{ env.INVENTORY_FILE }} --list -vvvv
+          ansible-inventory --inventory ${{ env.ANSIBLE_INVENTORY_FILE }} --list -vvvv
 
       - if: github.event.inputs.destroy_infra == 'false'
         name: Run Ansible Playbook
         run: |
-          ansible-playbook --inventory ${{ env.INVENTORY_FILE }} --private-key monitoring.pem ansible_playbook.yml
+          ansible-playbook --inventory ${{ env.ANSIBLE_INVENTORY_FILE }} --private-key ansible_playbook.yml
 
 
       - name: Send custom JSON data to Slack workflow
