@@ -5,7 +5,7 @@ route:
 receivers:
 - name: 'slack'
   slack_configs:
-  - api_url: 'https://hooks.slack.com/services/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'
+  - api_url: 'https://hooks.slack.com/services/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'
     username: 'Alertmanager'
     channel: '#lviv-monitoring'
     send_resolved: true
