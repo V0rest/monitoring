@@ -1,0 +1,50 @@
+############################
+- targets: ["192.168.210.5"]
+  labels:
+    hostname: LV-Switch00-ServerRoom
+############################
+- targets: ["192.168.210.21"]
+  labels:
+    hostname: LV-Switch01-Space01
+############################
+- targets: ["192.168.210.22"]
+  labels:
+    hostname: LV-Switch02-Space02
+############################
+- targets: ["192.168.210.23"]
+  labels:
+    hostname: LV-Switch03-Space03
+############################
+- targets: ["192.168.210.24"]
+  labels:
+    hostname: LV-Switch04-Space04
+############################
+- targets: ["192.168.210.25"]
+  labels:
+    hostname: LV-Switch05-Space05
+############################
+- targets: ["192.168.210.26"]
+  labels:
+    hostname: LV-Switch06-Space06
+############################
+- targets: ["192.168.210.27"]
+  labels:
+    hostname: LV-Switch07-Space07
+############################
+- targets: ["192.168.210.28"]
+  labels:
+    hostname: LV-Switch08-Space08
+############################
+#- targets: ["192.168.210.3"] ###### NO SNMP !!!
+#  labels:
+#    hostname: Switch-Multi-Hall
+############################
+############################
+- targets: ["192.168.97.2"]
+  labels:
+    hostname: IF-switch-1
+############################
+- targets: ["192.168.97.3"]
+  labels:
+    hostname: IF-switch-2
+############################

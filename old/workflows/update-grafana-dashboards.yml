@@ -1,0 +1,106 @@
+name: Update-Dashboards
+env:
+  AWS_REGION: us-east-1 
+  BUCKET: vitech-monitoring
+  ID_INSTANCE: i-0763246fd7bc645bf
+  INSTANCE_PATH_DASHBOARDS: /etc/monitoring/grafana/provisioning/dashboards
+  INSTANCE_PATH: /etc/monitoring
+  PATH_DASHBOARDS: /local_deployment/grafana/provisioning/dashboards 
+on:
+  workflow_dispatch:
+#  push:
+#    paths:
+#      - 'local_deployment/grafana/provisioning/dashboards/**'
+#    branches:
+#      - main
+jobs:
+  job0:
+    name: Grafana Linter job
+    strategy:
+      matrix:
+        go-version: [1.17.x]
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+    - name: Install Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: ${{ matrix.go-version }}
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Install Linter
+      run: go install github.com/grafana/dashboard-linter@latest
+    - name: Check Dashboards
+      run: |
+       flag=0
+       for var in $(ls -1 .$PATH_DASHBOARDS | grep ".json")
+       do
+         dashboard-linter lint .$PATH_DASHBOARDS/$var | grep "❌" && flag=$((flag+1))
+       done
+       if [[ flag != "0" ]]; then
+         exit 1
+       fi
+    - name: Send custom JSON data to Slack workflow
+      if: always()
+      id: slack
+      uses: slackapi/slack-github-action@v1.17.0
+      with:
+         # For posting a rich message using Block Kit
+       payload: |
+         {
+           "text": "GitHub Action Linter Check Grafana Ddashboards result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}",
+           "blocks": [
+             {
+               "type": "section",
+               "text": {
+                 "type": "mrkdwn",
+                 "text": "GitHub Action Linter Check Grafana Ddashboards result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
+               }
+             }
+           ]
+         }
+      env:
+       SLACK_WEBHOOK_URL: https://hooks.slack.com/services/${{ secrets.SLACK_WEBHOOK_URL }}
+       SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK       
+  job1:
+    name: Update-Dashboards
+    runs-on: ubuntu-20.04
+    needs: job0
+    environment: prod         
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2 
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_OWN }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_OWN }}
+          aws-region: ${{ env.AWS_REGION }}       
+      - name: Sync-to-S3
+        run: aws s3 sync .${{ env.PATH_DASHBOARDS }} s3://${{ env.BUCKET }}${{ env.PATH_DASHBOARDS }}
+      - name: Sync-from-S3-to-EC2
+        run: aws ssm send-command --document-name "AWS-RunShellScript" --document-version "1" --targets '[{"Key":"InstanceIds","Values":["${{ env.ID_INSTANCE }}"]}]' --parameters '{"workingDirectory":[""],"executionTimeout":["3600"],"commands":["aws s3 sync s3://${{ env.BUCKET }}${{ env.BUCKET_PATH }} ${{ env.INSTANCE_PATH_DASHBOARDS }}"]}' --timeout-seconds 600 --max-concurrency "50" --max-errors "0"  --output-s3-bucket-name "${{ env.BUCKET }}" --output-s3-key-prefix "ssm_logs"  --region ${{ env.AWS_REGION }}
+      - name: Restart-docker-compose
+        run: aws ssm send-command --document-name "AWS-RunShellScript" --document-version "1" --targets '[{"Key":"InstanceIds","Values":["${{ env.ID_INSTANCE }}"]}]' --parameters '{"workingDirectory":[""],"executionTimeout":["3600"],"commands":["docker-compose --project-directory ${{ env.INSTANCE_PATH }} --file ${{ env.INSTANCE_PATH }}/docker-compose.yml restart -t 5 grafana"]}' --timeout-seconds 600 --max-concurrency "50" --max-errors "0" --output-s3-bucket-name "${{ env.BUCKET }}" --output-s3-key-prefix "ssm_logs"  --region ${{ env.AWS_REGION }}
+      - name: Send custom JSON data to Slack workflow
+        if: always()
+        id: slack
+        uses: slackapi/slack-github-action@v1.17.0
+        with:
+         # For posting a rich message using Block Kit
+         payload: |
+           {
+             "text": "GitHub Action Update Grafana Ddashboards result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}",
+             "blocks": [
+               {
+                 "type": "section",
+                 "text": {
+                   "type": "mrkdwn",
+                   "text": "GitHub Action Update Grafana Ddashboards result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
+                 }
+               }
+             ]
+           }
+        env:
+         SLACK_WEBHOOK_URL: https://hooks.slack.com/services/${{ secrets.SLACK_WEBHOOK_URL }}
+         SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK

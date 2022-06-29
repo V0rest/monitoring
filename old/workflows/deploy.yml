@@ -1,0 +1,52 @@
+
+#jobs:
+#  job1:
+#    name: Deploy
+#    runs-on: ubuntu-20.04
+#    environment: prod
+#    steps:
+#      - name: Checkout Code
+#        uses: actions/checkout@v2
+
+#      - name: Configure AWS credentials
+#        uses: aws-actions/configure-aws-credentials@v1
+#        with:
+#          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_Altris }}
+#          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_Altris }}
+#          aws-region: ${{ env.AWS_REGION }}
+
+
+##      - name: Super-Linter
+##        uses: github/super-linter@v4.8.5
+
+#      - name: Sync-to-S3
+#        run: aws s3 sync .${{ env.DEPLOYMENT_PATH }} s3://${{ env.BUCKET }}${{ env.DEPLOYMENT_PATH }}
+
+ #     - name: Sync-from-S3-to-EC2
+ #       run: aws ssm send-command --document-name "AWS-RunShellScript" --document-version "1" --targets '[{"Key":"InstanceIds","Values":["${{ env.ID_INSTANCE }}"]}]' --parameters '{"workingDirectory":[""],"executionTimeout":["3600"],"commands":["aws s3 sync s3://${{ env.BUCKET }}${{ env.DEPLOYMENT_PATH }} ${{ env.INSTANCE_PATH }}"]}' --timeout-seconds 600 --max-concurrency "50" --max-errors "0"  --output-s3-bucket-name "${{ env.BUCKET }}" --output-s3-key-prefix "ssm_logs/Sync-S3-EC2" --region ${{ env.AWS_REGION }}
+
+ #     - name: Run-install.sh
+ #       run: aws ssm send-command --document-name "AWS-RunShellScript" --document-version "1" --targets '[{"Key":"InstanceIds","Values":["${{ env.ID_INSTANCE }}"]}]' --parameters '{"workingDirectory":[""],"executionTimeout":["3600"],"commands":["sleep 5","sudo chmod a+x ${{ env.INSTANCE_PATH }}/install.sh & bash ${{ env.INSTANCE_PATH }}/install.sh"]}' --timeout-seconds 600 --max-concurrency "50" --max-errors "0"  --output-s3-bucket-name "${{ env.BUCKET }}" --output-s3-key-prefix "ssm_logs/Run-install" --region ${{ env.AWS_REGION }}
+
+ #     - name: Send custom JSON data to Slack workflow
+ #       if: always()
+ #       id: slack
+ #       uses: slackapi/slack-github-action@v1.17.0
+ #       with:
+ #        # For posting a rich message using Block Kit
+ #        payload: |
+ #          {
+ #            "text": "GitHub Action Deploy Monitoring result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}",
+ #            "blocks": [
+ #              {
+ #                "type": "section",
+ #                "text": {
+ #                  "type": "mrkdwn",
+ #                  "text": "GitHub Action Deploy Monitoring result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
+ #                }
+ #              }
+ #            ]
+ #          }
+ #       env:
+ #        SLACK_WEBHOOK_URL: https://hooks.slack.com/services/${{ secrets.SLACK_WEBHOOK_URL }}
+ #        SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK

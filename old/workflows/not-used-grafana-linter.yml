@@ -1,0 +1,65 @@
+name: Grafana-Linter
+env:
+  DASHBOARD_PATH: ./local_deployment/grafana/provisioning/dashboards/
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '$DASHBOARD_PATH**'
+    branches:
+      - main
+
+  
+jobs:
+  job1:
+    name: Grafana Linter job
+    strategy:
+      matrix:
+        go-version: [1.17.x]
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - name: Install Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: ${{ matrix.go-version }}
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Install Linter
+      run: go install github.com/grafana/dashboard-linter@latest
+    - name: Check Dashboards
+      run: |
+       for var in $(ls -1 $DASHBOARD_PATH | grep .json)
+       do
+       dashboard-linter lint $DASHBOARD_PATH$var | grep "❌" && exit 1
+       done
+
+    - name: grep_log
+      id: id
+      run: |
+       for joba in $(curl -H "Accept: application/vnd.github.v3+json" -u Vorest35:${{ secrets.GET_JOB_ID }} https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs | grep '"id"' | awk -F: '{ print $2; }' | tr -d ',')
+       do
+       echo "$joba"
+       echo ::set-output name=jobID::$joba
+       done
+    outputs:
+      id_ouput: ${{ steps.id.outputs.jobID }}
+#       gh auth login --with-token < ${{ secrets.GET_JOB_ID }}
+#       jq --version
+#       shell: bash
+
+#       https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs | jq '.jobs[].id')
+  job2:
+    runs-on: ubuntu-latest
+    needs: job1
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: test1
+      run: echo "${{needs.job1.outputs.id_ouput}}"
+    - name: test
+      run: gh run view --log --job=${{needs.job1.outputs.id_ouput}}
+      env:
+       GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}

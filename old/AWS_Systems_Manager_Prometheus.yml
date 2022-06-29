@@ -1,0 +1,141 @@
+
+##########Parameter Store###prometheus-config-ScrapeConfig###################
+global:
+  scrape_interval: 15s
+  external_labels:
+    monitor: 'prometheus'
+
+scrape_configs:
+  - job_name: 'node'
+    static_configs:
+      - targets: ['localhost:9100']
+
+remote_write:
+  -
+    url: https://aps-workspaces.us-east-1.amazonaws.com/workspaces/ws-9efbb523-af03-42f4-8a5b-cbf419ec3948/api/v1/remote_write
+    queue_config:
+        max_samples_per_send: 1000
+        max_shards: 200
+        capacity: 2500
+    sigv4:
+        region: us-east-1
+
+##########Parameter Store###prometheus-config-NodeExporter-ServiceConfig###############
+[Unit]
+Description=Node Exporter
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+User=prometheus
+Group=prometheus
+Type=simple
+ExecStart=/etc/prometheus/node_exporter/node_exporter
+
+[Install]
+WantedBy=multi-user.target
+
+############Parameter Store###prometheus-config-ServiceConfig##################
+[Unit]
+Description=Prometheus
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+User=prometheus
+Group=prometheus
+Type=simple
+ExecStart=/usr/local/bin/prometheus \
+  --config.file=/etc/prometheus/prometheus.yml \
+  --storage.tsdb.path=/var/lib/prometheus/ \
+  --web.console.templates=/etc/prometheus/consoles \
+  --web.console.libraries=/etc/prometheus/console_libraries
+
+[Install]
+WantedBy=multi-user.target
+
+#######DOCUMENT#####prometheus-config-prometheus-installer###########################
+{
+  "schemaVersion": "2.2",
+  "description": "Create and configures Prometheus on linux instances",
+  "parameters": {
+    "NodeExporterPackageUrl": {
+      "default": "https://github.com/prometheus/node_exporter/releases/download/v1.3.1/node_exporter-1.3.1.linux-amd64.tar.gz",
+      "description": "Node Exporter package URL",
+      "type": "String"
+    },
+    "ServiceConfig": {
+      "default": "{{ ssm:prometheus-config-ServiceConfig }}",
+      "description": "Prometheus service configuration",
+      "type": "String"
+    },
+    "PackageUrl": {
+      "default": "https://github.com/prometheus/prometheus/releases/download/v2.32.1/prometheus-2.32.1.linux-amd64.tar.gz",
+      "description": "Prometheus package URL",
+      "type": "String"
+    },
+    "NodeExporterServiceConfig": {
+      "default": "{{ ssm:prometheus-config-NodeExporter-ServiceConfig }}",
+      "description": "The Node Exporter Service Configuration",
+      "type": "String"
+    },
+    "ScrapeConfig": {
+      "default": "{{ ssm:prometheus-config-ScrapeConfig }}",
+      "description": "The Prometheus scrape config",
+      "type": "String"
+    }
+  },
+  "mainSteps": [
+    {
+      "inputs": {
+        "timeoutSecconds": "60",
+        "runCommand": [
+          "echo 'Download and extracting Prometheus'",
+          "sudo systemctl stop prometheus >/dev/null 2>&1",
+          "wget {{ PackageUrl}} >/dev/null 2>&1",
+          "tar xfz prometheus-*.tar.gz",
+          "if [ $? != 0]; then exit 1; fi",
+          "mv prometheus-*.linux-amd64 prometheus-files",
+          "rm prometheus-*.tar.gz",
+          "echo 'Config Prometheus'",
+          "sudo useradd  --no-create-home --shell /bin/false prometheus | >/dev/null 2>&1",
+          "sudo mkdir -p /etc/prometheus",
+          "sudo mkdir -p /var/lib/prometheus",
+          "sudo chown prometheus:prometheus /etc/prometheus",
+          "sudo chown prometheus:prometheus /var/lib/prometheus",
+          "sudo cp prometheus-files/prometheus /usr/local/bin/",
+          "sudo cp prometheus-files/promtool /usr/local/bin/",
+          "sudo chown prometheus:prometheus /usr/local/bin/prometheus",
+          "sudo chown prometheus:prometheus /usr/local/bin/promtool",
+          "sudo cp -r prometheus-files/consoles /etc/prometheus/",
+          "sudo cp -r prometheus-files/console_libraries /etc/prometheus/",
+          "sudo chown -R prometheus:prometheus /etc/prometheus/consoles/",
+          "sudo chown -R prometheus:prometheus /etc/prometheus/console_libraries/",
+          "sudo echo \"{{ ScrapeConfig }}\" > /etc/prometheus/prometheus.yml",
+          "sudo chown prometheus:prometheus /etc/prometheus/prometheus.yml",
+          "sudo echo \"{{ ServiceConfig }}\" > /etc/systemd/system/prometheus.service",
+          "echo 'Start Prometheus service'",
+          "sudo systemctl daemon-reload",
+          "sudo systemctl enable prometheus >/dev/null 2>&1",
+          "sudo systemctl start prometheus",
+          "rm -rf prometheus-files/",
+          "echo 'Download and config Node Exporter'",
+          "sudo systemctl stop node_exporter >/dev/null 2>&1",
+          "wget {{ NodeExporterPackageUrl }} >/dev/null 2>&1",
+          "tar xfz node_exporter-*.tar.gz",
+          "mv node_exporter-*.linux-amd64 node_exporter",
+          "sudo rm -rf /etc/prometheus/node_exporter",
+          "sudo mv node_exporter/ /etc/prometheus/node_exporter/",
+          "rm node_exporter-*.tar.gz",
+          "sudo chown -R prometheus:prometheus /etc/prometheus/node_exporter/",
+          "sudo echo \"{{ NodeExporterServiceConfig }}\" > /etc/systemd/system/node_exporter.service",
+          "sudo systemctl daemon-reload",
+          "sudo systemctl enable node_exporter > /dev/null 2>&1",
+          "sudo systemctl start node_exporter"
+        ]
+      },
+      "name": "InstallPrometheus",
+      "action": "aws:runShellScript"
+    }
+  ]
+}

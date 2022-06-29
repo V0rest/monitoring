@@ -1,0 +1,249 @@
+- targets: ["192.168.99.4"]
+  labels:
+    hostname: IF-cam1
+############################
+- targets: ["192.168.99.6"]
+  labels:
+    hostname: IF-cam2
+############################
+- targets: ["192.168.99.7"]
+  labels:
+    hostname: IF-cam3
+############################
+- targets: ["192.168.99.8"]
+  labels:
+    hostname: IF-cam4
+############################
+- targets: ["192.168.99.9"]
+  labels:
+    hostname: IF-cam5
+############################
+- targets: ["192.168.99.11"]
+  labels:
+    hostname: IF-cam6
+############################
+- targets: ["192.168.99.12"]
+  labels:
+    hostname: IF-cam7
+############################
+- targets: ["192.168.99.13"]
+  labels:
+    hostname: IF-cam8
+############################
+- targets: ["192.168.99.14"]
+  labels:
+    hostname: IF-cam9
+############################
+- targets: ["192.168.99.16"]
+  labels:
+    hostname: IF-cam10
+############################
+- targets: ["192.168.99.15"]
+  labels:
+    hostname: IF-cam11
+############################
+- targets: ["192.168.99.3"]
+  labels:
+    hostname: IF-cam12
+############################
+- targets: ["192.168.97.9"]
+  labels:
+    hostname: IF-ECOSYS-M2135dn
+############################
+- targets: ["192.168.99.2"]
+  labels:
+    hostname: IF-Hikvision-NVR
+############################
+- targets: ["192.168.222.11"]
+  labels:
+    hostname: LV-Cam01-Space03
+############################
+- targets: ["192.168.222.12"]
+  labels:
+    hostname: LV-Cam02-Space06
+############################
+- targets: ["192.168.222.15"]
+  labels:
+    hostname: LV-Cam05
+############################
+- targets: ["192.168.222.18"]
+  labels:
+    hostname: LV-Cam08
+############################
+- targets: ["192.168.222.19"]
+  labels:
+    hostname: LV-Cam09
+############################
+- targets: ["192.168.222.21"]
+  labels:
+    hostname: LV-Cam11
+############################
+- targets: ["192.168.222.22"]
+  labels:
+    hostname: LV-Cam12
+############################
+- targets: ["192.168.222.23"]
+  labels:
+    hostname: LV-Cam13
+############################
+- targets: ["192.168.222.2"]
+  labels:
+    hostname: LV-HikvisionNVR-ServerRoom
+############################
+- targets: ["192.168.213.4"]
+  labels:
+    hostname: LV-Printer01-Space03
+############################
+- targets: ["192.168.213.3"]
+  labels:
+    hostname: LV-Printer02-Hall
+############################
+- targets: ["192.168.212.1"]
+  labels:
+    hostname: LV-Fortigate-ServerRoom
+############################
+- targets: ["192.168.97.1"]
+  labels:
+    hostname: IF-Fortigate
+############################
+- targets: ["192.168.210.5"]
+  labels:
+    hostname: LV-Switch00-ServerRoom
+############################
+- targets: ["192.168.210.21"]
+  labels:
+    hostname: LV-Switch01-Space01
+############################
+- targets: ["192.168.210.22"]
+  labels:
+    hostname: LV-Switch02-Space02
+############################
+- targets: ["192.168.210.23"]
+  labels:
+    hostname: LV-Switch03-Space03
+############################
+- targets: ["192.168.210.24"]
+  labels:
+    hostname: LV-Switch04-Space04
+############################
+- targets: ["192.168.210.25"]
+  labels:
+    hostname: LV-Switch05-Space05
+############################
+- targets: ["192.168.210.26"]
+  labels:
+    hostname: LV-Switch06-Space06
+############################
+- targets: ["192.168.210.27"]
+  labels:
+    hostname: LV-Switch07-Space07
+############################
+- targets: ["192.168.210.28"]
+  labels:
+    hostname: LV-Switch08-Space08
+############################
+- targets: ["192.168.210.3"]
+  labels:
+    hostname: Switch-Multi-Hall
+############################
+- targets: ["192.168.211.31"]
+  labels:
+    hostname: WiFi-AP-Lab01
+############################
+- targets: ["192.168.211.32"]
+  labels:
+    hostname: WiFi-AP-Lab02
+############################
+- targets: ["192.168.211.33"]
+  labels:
+    hostname: WiFi-AP-Lab03
+############################
+- targets: ["192.168.211.34"]
+  labels:
+    hostname: WiFi-AP-Lab04
+############################
+- targets: ["192.168.211.35"]
+  labels:
+    hostname: WiFi-AP-Lab05
+############################
+- targets: ["192.168.211.36"]
+  labels:
+    hostname: WiFi-AP-Lab06
+############################
+- targets: ["192.168.211.37"]
+  labels:
+    hostname: WiFi-AP-Lab07
+############################
+- targets: ["192.168.211.38"]
+  labels:
+    hostname: WiFi-AP-Lab08
+############################
+- targets: ["192.168.211.39"]
+  labels:
+    hostname: WiFi-AP-MultiHall
+############################
+- targets: ["192.168.211.40"]
+  labels:
+    hostname: WiFi-AP-Hall01
+############################
+- targets: ["192.168.211.41"]
+  labels:
+    hostname: WiFi-AP-Hall02
+############################
+- targets: ["192.168.97.1"]
+  labels:
+    hostname: IF-Fortigate
+############################
+- targets: ["192.168.97.11"]
+  labels:
+    hostname: IF-WiFi-1-Kitchen
+############################
+- targets: ["192.168.97.12"]
+  labels:
+    hostname: IF-WiFi-2-Work-space-2
+############################
+- targets: ["192.168.97.13"]
+  labels:
+    hostname: IF-WiFi-3-Work-space-2
+############################
+- targets: ["192.168.97.14"]
+  labels:
+    hostname: IF-WiFi-4-Work-Space-1
+############################
+- targets: ["192.168.97.15"]
+  labels:
+    hostname: IF-WiFi-5-Work-Space-1
+############################
+- targets: ["192.168.97.16"]
+  labels:
+    hostname: IF-WiFi-6-Work-Space-3
+############################
+- targets: ["192.168.97.17"]
+  labels:
+    hostname: IF-WiFi-7-Work-Space-3
+############################
+- targets: ["192.168.97.18"]
+  labels:
+    hostname: IF-WiFi-8-Work-Space-3
+############################
+- targets: ["192.168.97.19"]
+  labels:
+    hostname: IF-WiFi-9-Sport-Room
+############################
+- targets: ["192.168.212.1"]
+  labels:
+    hostname: LV-Fortigate-ServerRoom
+############################
+############################
+- targets: ["192.168.97.2"]
+  labels:
+    hostname: IF-switch-1
+############################
+- targets: ["192.168.97.3"]
+  labels:
+    hostname: IF-switch-2
+############################
+- targets: ["192.168.211.12"]
+  labels:
+    hostname: UniFi-Controller
+############################

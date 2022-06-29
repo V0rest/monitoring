@@ -1,0 +1,128 @@
+- targets: ["192.168.210.5"]
+  labels:
+    hostname: LV-Switch00-ServerRoom
+############################
+- targets: ["192.168.210.21"]
+  labels:
+    hostname: LV-Switch01-Space01
+############################
+- targets: ["192.168.210.22"]
+  labels:
+    hostname: LV-Switch02-Space02
+############################
+- targets: ["192.168.210.23"]
+  labels:
+    hostname: LV-Switch03-Space03
+############################
+- targets: ["192.168.210.24"]
+  labels:
+    hostname: LV-Switch04-Space04
+############################
+- targets: ["192.168.210.25"]
+  labels:
+    hostname: LV-Switch05-Space05
+############################
+- targets: ["192.168.210.26"]
+  labels:
+    hostname: LV-Switch06-Space06
+############################
+- targets: ["192.168.210.27"]
+  labels:
+    hostname: LV-Switch07-Space07
+############################
+- targets: ["192.168.210.28"]
+  labels:
+    hostname: LV-Switch08-Space08
+############################
+- targets: ["192.168.210.3"]
+  labels:
+    hostname: Switch-Multi-Hall
+############################
+- targets: ["192.168.211.31"]
+  labels:
+    hostname: WiFi-AP-Lab01
+############################
+- targets: ["192.168.211.32"]
+  labels:
+    hostname: WiFi-AP-Lab02
+############################
+- targets: ["192.168.211.33"]
+  labels:
+    hostname: WiFi-AP-Lab03
+############################
+- targets: ["192.168.211.34"]
+  labels:
+    hostname: WiFi-AP-Lab04
+############################
+- targets: ["192.168.211.35"]
+  labels:
+    hostname: WiFi-AP-Lab05
+############################
+- targets: ["192.168.211.36"]
+  labels:
+    hostname: WiFi-AP-Lab06
+############################
+- targets: ["192.168.211.37"]
+  labels:
+    hostname: WiFi-AP-Lab07
+############################
+- targets: ["192.168.211.38"]
+  labels:
+    hostname: WiFi-AP-Lab08
+############################
+- targets: ["192.168.211.39"]
+  labels:
+    hostname: WiFi-AP-MultiHall
+############################
+- targets: ["192.168.211.40"]
+  labels:
+    hostname: WiFi-AP-Hall01
+############################
+- targets: ["192.168.211.41"]
+  labels:
+    hostname: WiFi-AP-Hall02
+############################
+- targets: ["192.168.97.1"]
+  labels:
+    hostname: IF-Fortigate
+############################
+- targets: ["192.168.97.11"]
+  labels:
+    hostname: IF-WiFi-1-Kitchen
+############################
+- targets: ["192.168.97.12"]
+  labels:
+    hostname: IF-WiFi-2-Work-space-2
+############################
+- targets: ["192.168.97.13"]
+  labels:
+    hostname: IF-WiFi-3-Work-space-2
+############################
+- targets: ["192.168.97.14"]
+  labels:
+    hostname: IF-WiFi-4-Work-Space-1
+############################
+- targets: ["192.168.97.15"]
+  labels:
+    hostname: IF-WiFi-5-Work-Space-1
+############################
+- targets: ["192.168.97.16"]
+  labels:
+    hostname: IF-WiFi-6-Work-Space-3
+############################
+- targets: ["192.168.97.17"]
+  labels:
+    hostname: IF-WiFi-7-Work-Space-3
+############################
+- targets: ["192.168.97.18"]
+  labels:
+    hostname: IF-WiFi-8-Work-Space-3
+############################
+- targets: ["192.168.97.19"]
+  labels:
+    hostname: IF-WiFi-9-Sport-Room
+############################
+- targets: ["192.168.212.1"]
+  labels:
+    hostname: LV-Fortigate-ServerRoom
+############################

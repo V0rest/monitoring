@@ -1,0 +1,25 @@
+on:
+   workflow_dispatch:
+     inputs:
+       scopeTests:
+         description: 'Scope of tests'
+         required: false
+         type: boolean
+         default: ''
+#  pull_request:
+#    types:
+#      - closed
+
+
+
+jobs:
+  build:
+#  if_merged:
+#   if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+    - run: |
+        echo $TEST | tail -n3
+      env: 
+        TEST: ${{ secrets.TEST }}
+     

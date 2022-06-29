@@ -1,0 +1,10 @@
+plugin: amazon.aws.aws_ec2
+regions:
+  - eu-west-1
+keyed_groups:
+  - key: key_name
+    separator: ''
+filters:
+  tag:Name:
+    - Monioring-Prometheus-Grafana
+  instance-state-name : running

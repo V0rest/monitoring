@@ -1,0 +1,9 @@
+############################
+- targets: ["192.168.212.1"]
+  labels:
+    hostname: LV-Fortigate-ServerRoom
+############################
+- targets: ["192.168.97.1"]
+  labels:
+    hostname: IF-Fortigate
+############################

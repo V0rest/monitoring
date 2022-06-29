@@ -1,0 +1,177 @@
+name: Deploy Monitoring
+
+on:
+  workflow_dispatch:
+    inputs:
+      destroy_infra:
+        description: 'Destroy infrastructure'
+        required: true
+        default: 'false'
+
+env:
+  AWS_REGION: eu-west-1
+  BUCKET: office-monitoring
+  INSTANCE_PATH: /etc/monitoring
+  DEPLOYMENT_PATH: /local_deployment
+  inventory-file: inventory.aws_ec2.yml
+  ANSIBLE_HOST_KEY_CHECKING: false
+  ANSIBLE_REMOTE_USER: ec2-user
+
+jobs:
+  terraform:
+    name: "Deploy"
+    runs-on: ubuntu-20.04
+    environment: Prod
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+#
+#      - name: Configure AWS credentials
+#        uses: aws-actions/configure-aws-credentials@v1
+#        with:
+#          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_VITECH_CLOUD }}
+#          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_VITECH_CLOUD }}
+#          aws-region: ${{ env.AWS_REGION }}
+
+      - name: "Setup - Build AWS Credentials"
+        run: |
+          mkdir -p ~/.aws
+          echo "[default]" > ~/.aws/credentials
+          echo "aws_access_key_id = ${{ secrets.AWS_ACCESS_KEY_ID_VITECH_CLOUD }}" >> ~/.aws/credentials
+          echo "aws_secret_access_key = ${{ secrets.AWS_SECRET_ACCESS_KEY_VITECH_CLOUD }}" >> ~/.aws/credentials
+          echo "[default]" > ~/.aws/config
+          echo "region = ${{ secrets.AWS_DEFAULT_REGION }}" >> ~/.aws/config
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_wrapper: false
+
+#      - name: Terraform Format
+#        id: fmt
+#        shell: bash
+#        run: terraform fmt -check
+
+      - name: Terraform Init
+        id: init
+        run: terraform init
+
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+
+      - name: Terraform Plan
+        id: plan
+#        if: github.event_name == 'pull_request'
+        run: terraform plan -no-color -input=false
+        continue-on-error: true
+
+      - name: Terraform Plan Status
+        if: steps.plan.outcome == 'failure'
+        run: exit 1
+
+      - if: github.event.inputs.destroy_infra == 'false'
+        name: Terraform Apply
+        id: apply
+        run: |
+          terraform apply -auto-approve -input=false
+          echo "::set-output name=instance_id::$(terraform output instance_id | tr -d "\"")"
+
+      - if: github.event.inputs.destroy_infra == 'true'
+        name: Terraform Destroy
+        id: destroy
+        run: |
+          terraform destroy -auto-approve -input=false
+
+
+#      - if: github.event.inputs.destroy_infra == 'false'
+#        name: Checkout Code
+#        uses: actions/checkout@v3
+
+
+#      - if: github.event.inputs.destroy_infra == 'false'
+#        name: Configure AWS credentials
+#        uses: aws-actions/configure-aws-credentials@v1
+#        with:
+#          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_VITECH_CLOUD }}
+#          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_VITECH_CLOUD }}
+#          aws-region: ${{ env.AWS_REGION }}
+
+      # This job as a targets uses EC2 tags to apply to specific instances
+      #- if: github.event.inputs.destroy_infra == 'false'
+      #  name: Sync-to-S3
+      #  run: |
+      #    aws s3 sync .${{ env.DEPLOYMENT_PATH }} s3://${{ env.BUCKET }}${{ env.DEPLOYMENT_PATH }}
+      #    aws ssm send-command --document-name "AWS-RunShellScript" --document-version "1" --targets Key=tag:Name,Values=MLFlow_Registry_Server --parameters '{"workingDirectory":[""],"executionTimeout":["3600"],"commands":["aws s3 sync s3://${{ env.BUCKET }}${{ env.DEPLOYMENT_PATH }} ${{ env.INSTANCE_PATH }}"]}' --timeout-seconds 600 --max-concurrency "50" --max-errors "0"  --output-s3-bucket-name "${{ env.BUCKET }}" --output-s3-key-prefix "ssm_logs/Sync-S3-EC2" --region ${{ env.AWS_REGION }}
+      #    aws ssm send-command --document-name "AWS-RunShellScript" --document-version "1" --targets Key=tag:Name,Values=MLFlow_Registry_Server --parameters '{"workingDirectory":[""],"executionTimeout":["3600"],"commands":["sleep 5","sudo chmod a+x ${{ env.INSTANCE_PATH }}/install.sh & bash ${{ env.INSTANCE_PATH }}/install.sh"]}' --timeout-seconds 600 --max-concurrency "50" --max-errors "0"  --output-s3-bucket-name "${{ env.BUCKET }}" --output-s3-key-prefix "ssm_logs/Run install" --region ${{ env.AWS_REGION }}
+
+      - if: github.event.inputs.destroy_infra == 'false'
+        name: Write SSH Key to Disk
+        shell: pwsh
+        run: |
+          Set-Content -Path mykey -Value '${{ secrets.ANSIBLE_SSH_KEY }}'
+          chmod 400 mykey
+
+      - if: github.event.inputs.destroy_infra == 'false'
+        name: Cache Python Packages and Ansible
+        id: cachestuff
+        uses: actions/cache@v3.0.4
+        with:
+          path: |
+            ~/.cache/
+            ~/.ansible/
+          key: python-ansible-cache
+
+
+
+      - name: Install Dependencies
+        if: |
+         github.event.inputs.destroy_infra == 'false' ||
+         (steps.cachestuff.outputs.cache-hit != 'true')
+        shell: pwsh
+        run: |
+          pip3 install boto3 ansible
+          ansible-galaxy collection install amazon.aws
+
+      - if: github.event.inputs.destroy_infra == 'false'
+        name: Validate Ansible Inventory
+        run: |
+          ansible-inventory --inventory ${{ env.inventory-file }} --list -vvvv
+
+      - if: github.event.inputs.destroy_infra == 'false'
+        name: Run Ansible Playbook
+        run: |
+          ansible-playbook --inventory ${{ env.inventory-file }} --private-key mykey ansible_playbook.yml
+
+      # This job as a targets uses output from terraform and set to ssm aws cli
+      - if: github.event.inputs.destroy_infra == 'false'
+        name: Sync-to-S3
+        run: |
+          INSTANCE_IDS=${{ steps.apply.outputs.instance_id }}
+          aws s3 sync .${{ env.DEPLOYMENT_PATH }} s3://${{ env.BUCKET }}${{ env.DEPLOYMENT_PATH }}
+          aws ssm send-command --document-name "AWS-RunShellScript" --document-version "1" --targets Key=InstanceIds,Values=$INSTANCE_IDS --parameters '{"workingDirectory":[""],"executionTimeout":["3600"],"commands":["aws s3 sync s3://${{ env.BUCKET }}${{ env.DEPLOYMENT_PATH }} ${{ env.INSTANCE_PATH }}", "echo GRAFANA_ADMIN_PASSWORD=${{ secrets.GRAFANA_ADMIN_PASSWORD }} >> ${{ env.INSTANCE_PATH }}/.env"}]}' --timeout-seconds 600 --max-concurrency "50" --max-errors "0"  --output-s3-bucket-name "${{ env.BUCKET }}" --output-s3-key-prefix "ssm_logs/Sync-S3-EC2" --region ${{ env.AWS_REGION }}
+          aws ssm send-command --document-name "AWS-RunShellScript" --document-version "1" --targets Key=InstanceIds,Values=$INSTANCE_IDS --parameters '{"workingDirectory":[""],"executionTimeout":["3600"],"commands":["sleep 5","sudo chmod a+x ${{ env.INSTANCE_PATH }}/install.sh & bash ${{ env.INSTANCE_PATH }}/install.sh"]}' --timeout-seconds 600 --max-concurrency "50" --max-errors "0"  --output-s3-bucket-name "${{ env.BUCKET }}" --output-s3-key-prefix "ssm_logs/Run install" --region ${{ env.AWS_REGION }}
+
+      - name: Send job status to Slack
+        if: always()
+        id: slack
+        uses: slackapi/slack-github-action@v1.19.0
+        with:
+         # For posting a rich message using Block Kit
+         payload: |
+           {
+             "text": "GitHub Action: Deploy-Monitoring result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}",
+             "blocks": [
+               {
+                 "type": "section",
+                 "text": {
+                   "type": "mrkdwn",
+                   "text": "GitHub Action: Deploy-Monitoring result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
+                 }
+               }
+             ]
+           }
+        env:
+         SLACK_WEBHOOK_URL: https://hooks.slack.com/services/${{ secrets.SLACK_WEBHOOK_URL }}
+         SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK

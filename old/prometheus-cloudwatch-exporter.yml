@@ -1,0 +1,20 @@
+region: us-east-1
+metrics:
+# - aws_namespace: AWS/EC2
+#   aws_metric_name: CPUUtilization
+#   aws_dimensions: [InstanceId]
+#   aws_statistics: [Average]
+# - aws_namespace: AWS/EC2
+#   aws_metric_name: DiskReadOps
+#   aws_dimensions: [InstanceId]
+#   aws_statistics: [Sum]
+# - aws_namespace: AWS/EC2
+#   aws_metric_name: DiskWriteOps
+#   aws_dimensions: [InstanceId]
+#   aws_statistics: [Sum]
+
+# - aws_namespace: AWS/ApiGateway
+ #  aws_metric_name: 4XXError
+  # aws_dimensions: [ApiName]
+   #aws_statistics: [Average]
+

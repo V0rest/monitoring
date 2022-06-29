@@ -1,0 +1,91 @@
+global:
+  scrape_interval:     1s
+  evaluation_interval: 1s
+
+  # Attach these labels to any time series or alerts when communicating with
+  # external systems (federation, remote storage, Alertmanager).
+  external_labels:
+      monitor: 'Prom-NUM_MIRROR'
+
+# Load and evaluate rules in this file every 'evaluation_interval' seconds.
+rule_files:
+  - "alertrules.yml"
+
+# A scrape configuration containing exactly one endpoint to scrape.
+scrape_configs:
+
+  - job_name: 'nodeexporter'
+    static_configs:
+      - targets: ['nodeexporter:9100']
+        labels:
+          job: 'nodeexporter-NUM_MIRROR'
+
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: ['cadvisor:8080']
+        labels:
+          job: 'cadvisor-NUM_MIRROR'
+
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+        labels:
+          job: 'prometheus-NUM_MIRROR'
+
+  - job_name: 'mirror-prometheus'
+    static_configs:
+      - targets: ['EIP_ANOTHER_MIRROR:9090']
+        labels:
+          job: 'prometheus-EIP_ANOTHER_MIRROR'
+
+  - job_name: 'dockerexporter'
+    static_configs:
+      - targets: ['172.17.0.1:9323']
+        labels:
+          job: 'dockerexporter-NUM_MIRROR'
+
+  - job_name: 'vmagent'
+    static_configs:
+      - targets: ['vmagent:8429']
+        labels:
+          job: 'vmagent-NUM_MIRROR'
+
+  - job_name: 'vminsert'
+    static_configs:
+      - targets: ['vminsert:8480']
+        labels:
+          job: 'vminsert-NUM_MIRROR'
+
+  - job_name: 'vmselect'
+    static_configs:
+      - targets: ['vmselect:8481']
+        labels:
+          job: 'vmselect-NUM_MIRROR'
+
+  - job_name: 'vmstorage'
+    static_configs:
+      - targets: ['vmstorage:8482']
+        labels:
+          job: 'vmstorage-NUM_MIRROR'
+
+
+  - job_name: 'vmalert'
+    static_configs:
+      - targets: ['vmalert:8880']
+        labels:
+          job: 'vmalert-NUM_MIRROR'
+
+
+remote_write:
+  - url: http://AWS_NLB:8480/insert/0/prometheus/
+    queue_config:
+      max_samples_per_send: 10000
+      capacity: 20000
+      max_shards: 30
+
+alerting:
+  alertmanagers:
+  - scheme: http
+    static_configs:
+    - targets:
+      - 'alertmanager:9093'

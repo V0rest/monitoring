@@ -1,0 +1,117 @@
+name: do-the-job
+on:   
+ workflow_dispatch:
+env:
+ REPOSITORY_URL_ML: public.ecr.aws/m4z6a4c8/ml-train
+jobs:
+  start-runner:
+    name: Start self-hosted EC2 runner
+    runs-on: ubuntu-20.04
+    outputs:
+      label: ${{ steps.start-ec2-runner.outputs.label }}
+      ec2-instance-id: ${{ steps.start-ec2-runner.outputs.ec2-instance-id }}
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_ALTRIS }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_ALTRIS }}
+          aws-region: ${{ secrets.AWS_REGION }}
+      - name: Start EC2 runner
+        id: start-ec2-runner
+        uses: machulav/ec2-github-runner@v2
+        with:
+          mode: start
+          github-token: ${{ secrets.GET_JOB_ID }}
+          ec2-image-id: ami-04505e74c0741db8d
+          ec2-instance-type: t3.large
+          subnet-id: subnet-43c2a36d
+          security-group-id: sg-0a3c8453abb3beef5
+ #         iam-role-name: my-role-name # optional, requires additional permissions
+ #         aws-resource-tags: > # optional, requires additional permissions
+ #           [
+ #             {"Key": "Name", "Value": "ec2-github-runner"},
+ #             {"Key": "GitHubRepository", "Value": "${{ github.repository }}"}
+ #           ]
+  do-the-job:
+    name: Do the job on the runner
+    needs: start-runner # required to start the main job when the runner is ready
+    runs-on: ${{ needs.start-runner.outputs.label }} # run the job on the newly created runner
+#    steps:
+#      - name: Hello World
+#        run: echo 'Hello World!'
+
+
+
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: iterative/setup-cml@v1
+      - name: deploy
+        shell: bash
+        env:
+    #      repo_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_ALTRIS }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_ALTRIS }}
+        run: |
+          cml-runner \
+          --cloud aws \
+          --cloud-region us-east \
+          --cloud-type=g4dn.xlarge \
+          --cloud-hdd-size 150 \
+          --cloud-ssh-private="$(perl -pe 's/\n/\\n/g' my_key.pem)"
+          --cloud-startup-script d2dldCBodHRwczovL2FsdHJpcy1jbWwuczMuYW1hem9uYXdzLmNvbS9zaG1zaXplLnNoICYmIHN1ZG8gc2ggc2htc2l6ZS5zaA==
+          --idle-timeout 360
+          --labels=cml-runner
+  run:
+    needs: do-the-job
+    runs-on: [self-hosted,cml-runner]
+    container: 
+      image: docker://public.ecr.aws/m4z6a4c8/ml-train:cml #${{ env.REPOSITORY_URL_ML }}:cml    #iterativeai/cml:0-dvc2-base1-gpu
+      options: --gpus all
+
+    steps:
+      - name: Train model
+        uses: actions/checkout@v2
+        env:
+          REPO_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_ALTRIS }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_ALTRIS }}
+          S3_BUCKET_NAME: data-oct-huvitz-old
+      - name: run  
+        run: |
+          nvidia-smi
+          df -h | grep shm
+          mkdir data
+          aws s3 sync --only-show-errors s3://${{ env.S3_BUCKET_NAME }} data
+          python split_huvitz_classification_data.py
+          catalyst-dl run --config=base_config.yml >> report.md    
+
+
+
+
+
+
+
+  stop-runner:
+    name: Stop self-hosted EC2 runner
+    needs:
+      - start-runner # required to get output from the start-runner job
+      - do-the-job # required to wait when the main job is done
+      - run
+    runs-on: ubuntu-20.04
+    if: ${{ always() }} # required to stop the runner even if the error happened in the previous jobs
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_ALTRIS }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_ALTRIS }}
+          aws-region: ${{ secrets.AWS_REGION }}
+      - name: Stop EC2 runner
+        uses: machulav/ec2-github-runner@v2
+        with:
+          mode: stop
+          github-token: ${{ secrets.GET_JOB_ID }}
+          label: ${{ needs.start-runner.outputs.label }}
+          ec2-instance-id: ${{ needs.start-runner.outputs.ec2-instance-id }}

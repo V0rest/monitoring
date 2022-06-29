@@ -1,0 +1,114 @@
+global:
+  scrape_interval:     10m
+  scrape_timeout:      10m
+  evaluation_interval: 15s
+
+  # Attach these labels to any time series or alerts when communicating with
+  # external systems (federation, remote storage, Alertmanager).
+  external_labels:
+      monitor: 'Monitoring'
+
+# Load and evaluate rules in this file every 'evaluation_interval' seconds.
+rule_files:
+  - 'alertrules.yml'
+
+# A scrape configuration containing exactly one endpoint to scrape.
+scrape_configs:
+  - job_name: 'node_exporter'
+    scrape_interval: 10s
+    static_configs:
+      - targets: ['node_exporter:9100']
+    relabel_configs:
+      - source_labels: [__address__]
+        regex: '.*'
+        target_label: instance
+        replacement: 'LocalHost'
+
+  - job_name: 'cadvisor'
+    scrape_interval: 10s
+    static_configs:
+      - targets: ['cadvisor:8080']
+
+  - job_name: 'prometheus'
+    scrape_interval: 10s
+    static_configs:
+      - targets: ['localhost:9090']
+    relabel_configs:
+      - source_labels: [__address__]
+        regex: '.*'
+        target_label: instance
+        replacement: 'LocalHost'      
+
+  - job_name: 'docker_exporter'
+    scrape_interval: 10s
+    static_configs:
+      - targets: ['172.17.0.1:9323']
+    relabel_configs:
+      - source_labels: [__address__]
+        regex: '.*'
+        target_label: instance
+        replacement: 'LocalHost'
+
+  - job_name: 'tplink_snmp_exporter'
+    scrape_interval: 1m
+    metrics_path: /snmp
+    params:
+      module: [tplink_snmp]
+    file_sd_configs:
+      - files:
+          - snmp/tplink_targets.yml
+        refresh_interval: 1m
+    relabel_configs:
+    - source_labels: [__address__]
+      target_label: __param_target
+    - source_labels: [__param_target]
+      target_label: instance
+    - target_label: __address__
+      replacement: snmp_exporter:9116
+
+  - job_name: 'fortigate_snmp_exporter'
+    scrape_interval: 5m
+    metrics_path: /snmp
+    params:
+      module: [fortigate_snmp]
+    file_sd_configs:
+      - files:
+          - snmp/fortinet_targets.yml
+        refresh_interval: 1m
+    relabel_configs:
+    - source_labels: [__address__]
+      target_label: __param_target
+    - source_labels: [__param_target]
+      target_label: instance
+    - target_label: __address__
+      replacement: snmp_exporter:9116
+
+#  - job_name: cloudwatch-exporter
+#    honor_labels: true
+#    metrics_path: '/metrics'
+#    static_configs.:
+#      - targets: ['cloudwatch-exporter:9106']
+
+
+  - job_name: 'blackbox_icmp_prober'
+    scrape_interval: 5s
+    metrics_path: /probe
+    params:
+      module: [icmp]
+    file_sd_configs:
+      - files:
+          - blackbox/blackbox_targets.yml
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox:9115  # This is your blackbox exporter.
+
+alerting:
+  alertmanagers:
+  - scheme: http
+    static_configs:
+    - targets:
+      - 'alertmanager:9093'

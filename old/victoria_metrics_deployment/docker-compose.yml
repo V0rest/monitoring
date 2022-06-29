@@ -1,0 +1,132 @@
+version: '3.5'
+services:
+
+#########NodeExporter##########################################################
+  nodeexporter:
+    image: prom/node-exporter:v1.3.1
+    container_name: nodeexporter
+    ports:
+      - 9100:9100
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    restart: unless-stopped
+
+###########Cadvisor############################################################
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.39.3
+    container_name: cadvisor
+    ports:
+      - 8080:8080
+    privileged: true
+    devices:
+      - /dev/kmsg:/dev/kmsg
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker:/var/lib/docker:ro
+      - /cgroup:/cgroup:ro
+    restart: unless-stopped
+
+##########Prometheus###########################################################
+  prometheus:
+    image: prom/prometheus:v2.33.1
+    container_name: prometheus
+    ports:
+      - 9090:9090
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    restart: unless-stopped
+
+###########Grafana##############################################################
+  grafana:
+    image: grafana/grafana:8.3.4
+    container_name: grafana
+    ports:
+      - 3000:3000
+    depends_on:
+      - "vmselect"
+    volumes:
+      - ./grafana/config.ini:/etc/grafana/grafana.ini
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
+      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+    restart: unless-stopped
+
+#########VictoriaMetrics storage################################################
+  vmstorage:
+    image: victoriametrics/vmstorage:v1.72.0-cluster
+    container_name: vmstorage-NUM_MIRROR
+    ports:
+      - 8482:8482
+      - 8400:8400
+      - 8401:8401
+    volumes:
+      - /mnt/efs/EFS_NAME:/storage
+    command:
+      - '--storageDataPath=/storage'
+      - '--dedup.minScrapeInterval=1ms'
+#      - '--replicationFactor=3'
+    restart: always
+
+#########VictoriaMetrics vminsert###############################################
+  vminsert:
+    image: victoriametrics/vminsert:v1.72.0-cluster
+    container_name: vminsert
+    ports:
+      - 8480:8480
+    depends_on:
+      - "vmstorage"
+    command:
+      - '--storageNode=vmstorage-NUM_MIRROR:8400'
+      - '--storageNode=EIP_ANOTHER_MIRROR:8400'
+#      - '--storage1ode=10.10.10.10:8400'
+#      - '--replicationFactor=3'
+    restart: always
+
+#########VictoriaMetrics select#################################################
+  vmselect:
+    image: victoriametrics/vmselect:v1.72.0-cluster
+    container_name: vmselect
+    ports:
+      - 8481:8481
+    depends_on:
+      - "vmstorage"
+    command:
+      - '--storageNode=vmstorage-NUM_MIRROR:8401'
+      - '--storageNode=EIP_ANOTHER_MIRROR:8401'
+#      - '--storage1ode=10.10.10.10'
+#      - '--replicationFactor=3'
+      - '--dedup.minScrapeInterval=1ms'
+    restart: always
+
+#########Alert Manager##########################################################
+  alertmanager:
+    image:  prom/alertmanager:v0.23.0
+    container_name: alertmanager
+    ports:
+      - 9093:9093
+    volumes:
+      - ./alertmanager.yml:/config/alertmanager.yml
+    command:
+      - '--config.file=/config/alertmanager.yml'
+    restart: unless-stopped
+
+volumes:
+  grafana_data: {}
+  prometheus_data: {}
