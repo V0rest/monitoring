@@ -150,7 +150,7 @@ jobs:
       - if: github.event.inputs.destroy_infra == 'false'
         name: Run Ansible Playbook
         run: |
-          ansible-playbook --inventory ${{ env.ANSIBLE_INVENTORY_FILE }} --private-key ansible_playbook.yml
+          ansible-playbook --inventory ${{ env.ANSIBLE_INVENTORY_FILE }} --private-key /home/runner/monitoring.pem ansible_playbook.yml
 
 
       - name: Send custom JSON data to Slack workflow
