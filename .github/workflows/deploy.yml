@@ -159,27 +159,3 @@ jobs:
           ansible-playbook --inventory ${{ env.ANSIBLE_INVENTORY_FILE }} --private-key /home/runner/monitoring.pem ansible_playbook.yml
 #/home/runner/monitoring.pem
 #${{ env.SSH_AUTH_SOCK }}
-
-
-      - name: Send custom JSON data to Slack workflow
-        if: always()
-        id: slack
-        uses: slackapi/slack-github-action@v1.19.0
-        with:
-          # For posting a rich message using Block Kit
-          payload: |
-            {
-              "text": "GitHub Action result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
-    #          "blocks": [
-    #            {
-    #              "type": "section",
-    #              "text": {
-    #                "type": "mrkdwn",
-    #                "text": "GitHub Action result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
-    #              }
-    #            }
-    #          ]
-            }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
