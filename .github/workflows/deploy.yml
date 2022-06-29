@@ -120,8 +120,8 @@ jobs:
         name: Write SSH Key to Disk
         shell: pwsh
         run: |
-          Set-Content -Path mykey -Value '${{ secrets.ANSIBLE_SSH_KEY }}'
-          chmod 400 mykey
+          Set-Content -Path ec2-key -Value '${{ secrets.ANSIBLE_SSH_KEY }}'
+          chmod 400 ec2-key
 
       - if: github.event.inputs.destroy_infra == 'false'
         name: Cache Python Packages and Ansible
@@ -152,13 +152,13 @@ jobs:
       - if: github.event.inputs.destroy_infra == 'false'
         name: Run Ansible Playbook
         run: |
-          ansible-playbook -u ${{ env.ANSIBLE_REMOTE_USER }} --inventory ${{ env.INVENTORY_FILE }} --private-key mykey ansible_playbook.yml
+          ansible-playbook --inventory ${{ env.INVENTORY_FILE }} --private-key ec2-key ansible_playbook.yml
 
 
       - name: Send custom JSON data to Slack workflow
         if: always()
         id: slack
-        uses: slackapi/slack-github-action@v1.18.0
+        uses: slackapi/slack-github-action@v1.19.0
         with:
           # For posting a rich message using Block Kit
           payload: |
