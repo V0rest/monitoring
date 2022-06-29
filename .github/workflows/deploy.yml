@@ -119,7 +119,7 @@ jobs:
         shell: bash
         run: |
           echo "${{ secrets.ANSIBLE_SSH_KEY }}" > /home/runner/monitoring.pem
-          chmod 400 monitoring.pem
+          chmod 400 /home/runner/monitoring.pem
 
       - if: github.event.inputs.destroy_infra == 'false'
         name: Cache Python Packages and Ansible
