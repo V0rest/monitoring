@@ -163,7 +163,7 @@ jobs:
 
       - name: add GRAFANA_ADMIN_PASSWORD to .env
         run: |
-          ansible all -m bash -a "echo GRAFANA_ADMIN_PASSWORD=${{ secrets.GRAFANA_ADMIN_PASSWORD }} >> ${{ env.INSTANCE_DEPLOY_PATH }}/.env" -i ${{ env.ANSIBLE_INVENTORY_FILE }} -b
+          ansible all -m shell -a "echo GRAFANA_ADMIN_PASSWORD=${{ secrets.GRAFANA_ADMIN_PASSWORD }} >> ${{ env.INSTANCE_DEPLOY_PATH }}/.env" -i ${{ env.ANSIBLE_INVENTORY_FILE }} -b
 
       - if: github.event.inputs.destroy_infra == 'false'
         name: Validate Ansible Inventory
