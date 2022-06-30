@@ -63,9 +63,9 @@ jobs:
           ansible-playbook --inventory ${{ env.ANSIBLE_INVENTORY_FILE }} ansible/ansible_update_dashboards.yml
           echo "::set-output name=msg::$(job output "The container status is running" )"
 
-#      - name: Grafana status
-#        if: steps.check_grafana_status.outcome != '"msg": "The container status is running"'
-#        run: exit 1
+      - name: Grafana status
+        if: steps.check_grafana_status.outcome != '"The container status is running"'
+        run: exit 1
 
 
 
