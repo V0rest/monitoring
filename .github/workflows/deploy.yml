@@ -132,19 +132,19 @@ jobs:
           echo "${{ secrets.ANSIBLE_SSH_KEY }}" > /home/runner/monitoring.pem
           chmod 400 /home/runner/monitoring.pem
 
-      - if: github.event.inputs.destroy_infra == 'false'
-        name: Cache Python Packages and Ansible
-        id: cachestuff
-        uses: actions/cache@v3.0.4
-        with:
-          path: |
-            ~/.cache/
-            ~/.ansible/
-          key: python-ansible-cache
-#         github.event.inputs.destroy_infra == 'false' ||
+#      - if: github.event.inputs.destroy_infra == 'false'
+#        name: Cache Python Packages and Ansible
+#        id: cachestuff
+#        uses: actions/cache@v3.0.4
+#        with:
+#          path: |
+#            ~/.cache/
+#            ~/.ansible/
+#          key: python-ansible-cache
+
       - name: Install Dependencies
         if: |
-          steps.cachestuff.outputs.cache-hit != 'true' 
+          github.event.inputs.destroy_infra == 'false'
         shell: bash
         run: |
           pip3 install boto3 ansible
