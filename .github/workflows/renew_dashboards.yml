@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 env:
-#  AWS_REGION: eu-west-1
+  AWS_REGION: eu-west-1
   INSTANCE_DEPLOY_PATH: /etc/monitoring
   REPO_DEPLOYMENT_PATH: /local_deployment
   GRAFANA_DASHBOARD_PATH: /local_deployment/grafana/provisioning/dashboards
@@ -25,7 +25,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_VITECH_CLOUD }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_VITECH_CLOUD }}
-          aws-region: ${{ env.AWS_REGION }}        
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Write SSH Key to Disk
         shell: bash
