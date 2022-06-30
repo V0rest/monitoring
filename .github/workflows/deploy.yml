@@ -144,8 +144,8 @@ jobs:
 
       - name: Install Dependencies
         if: |
-         github.event.inputs.destroy_infra == 'false' ||
-         (steps.cachestuff.outputs.cache-hit != 'true')
+#         github.event.inputs.destroy_infra == 'false' ||
+          steps.cachestuff.outputs.cache-hit != 'true' 
         shell: bash
         run: |
           pip3 install boto3 ansible
