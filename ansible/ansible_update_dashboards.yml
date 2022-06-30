@@ -6,20 +6,16 @@
   tasks:
 
     - name: Restart Grafana container
-      shell: "docker restart grafana"
-
-    - name: get container status
-      shell: "docker ps -a -f name=grafana --format {%raw%}"table {{.Status}}"{%endraw%} | awk 'FNR == 2 {print}' | awk '{print $1}'"
-      register: status
+      shell: docker restart grafana
 
     - name: Get infos on container
       docker_container_info:
         name: grafana
       register: result
 
-    - name: Does container exist?
-      debug:
-        msg: "The container {{ 'exists' if result.exists else 'does not exist' }}"
+#    - name: Does container exist?
+#      debug:
+#        msg: "The container {{ 'exists' if result.exists else 'does not exist' }}"
 
     - name: Print the status of the container
       debug:
