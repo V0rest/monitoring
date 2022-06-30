@@ -16,7 +16,7 @@ env:
   ANSIBLE_INVENTORY_FILE: ansible/inventory.aws_ec2.yml
   ANSIBLE_CONFIG: ansible/ansible.cfg
 jobs:
-  job:
+  terraform:
     name: "Deploy"
     runs-on: ubuntu-20.04
     environment: Prod
@@ -75,7 +75,7 @@ jobs:
         id: apply
         run: |
           terraform apply -auto-approve -input=false
-          echo "::set-output name=instance_id::$(job output instance_id | tr -d "\"")"
+          echo "::set-output name=instance_id::$(terraform output instance_id | tr -d "\"")"
 
       - if: github.event.inputs.destroy_infra == 'true'
         name: Terraform Destroy
