@@ -16,7 +16,7 @@ env:
   ANSIBLE_INVENTORY_FILE: inventory.aws_ec2.yml
 
 jobs:
-  terraform:
+  job:
     name: "Deploy"
     runs-on: ubuntu-20.04
     environment: Prod
