@@ -141,10 +141,9 @@ jobs:
             ~/.cache/
             ~/.ansible/
           key: python-ansible-cache
-
+#         github.event.inputs.destroy_infra == 'false' ||
       - name: Install Dependencies
         if: |
-#         github.event.inputs.destroy_infra == 'false' ||
           steps.cachestuff.outputs.cache-hit != 'true' 
         shell: bash
         run: |
