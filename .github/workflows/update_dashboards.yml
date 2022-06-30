@@ -43,14 +43,14 @@ jobs:
           echo "${{ secrets.ANSIBLE_SSH_KEY }}" > /home/runner/monitoring.pem
           chmod 400 /home/runner/monitoring.pem
 
-      - name: Cache Python Packages and Ansible
-        id: cachestuff
-        uses: actions/cache@v3.0.4
-        with:
-          path: |
-            ~/.cache/
-            ~/.ansible/
-          key: python-ansible-cache
+#      - name: Cache Python Packages and Ansible
+#        id: cachestuff
+#        uses: actions/cache@v3.0.4
+#        with:
+#          path: |
+#            ~/.cache/
+#            ~/.ansible/
+#          key: python-ansible-cache
 
       - name: Install Dependencies
 #        if: steps.cachestuff.outputs.cache-hit != 'true'
@@ -71,7 +71,8 @@ jobs:
         id: check_grafana_status
         run: |
           ansible-playbook --inventory ${{ env.ANSIBLE_INVENTORY_FILE }} ansible/ansible_update_dashboards.yml
-          echo "::set-output name=msg::$(job output msg | tr -d "\"")"
+
+#echo "::set-output name=msg::$(job output msg | tr -d "\"")"
 
 #      - name: Grafana status
 #        if: steps.check_grafana_status.outcome != '"msg": "The container status is running"'
