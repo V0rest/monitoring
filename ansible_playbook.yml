@@ -70,12 +70,12 @@
         dest: /usr/local/bin/docker-compose
         mode: 'u+x,g+x'
 
-    - name: Synchronization with --archive options enabled except for --times, with --checksum option enabled
-      ansible.posix.synchronize:
-        src: $GITHUB_WORKSPACE/local_deployment
+    - name: Synchronization with github
+      synchronize:
+        src: ${{ GITHUB_WORKSPACE }}/local_deployment
         dest: /etc/monitoring
-        checksum: yes
-        times: no
+      delegate_to: all
+
 
 
     - name: Create and start services
