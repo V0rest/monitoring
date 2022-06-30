@@ -13,8 +13,8 @@ env:
   BUCKET: office-monitoring
   INSTANCE_DEPLOY_PATH: /etc/monitoring
   REPO_DEPLOYMENT_PATH: /local_deployment
-  ANSIBLE_INVENTORY_FILE: inventory.aws_ec2.yml
-
+  ANSIBLE_INVENTORY_FILE: ansible/inventory.aws_ec2.yml
+  ANSIBLE_CONFIG: ansible/ansible.cfg
 jobs:
   job:
     name: "Deploy"
@@ -173,7 +173,7 @@ jobs:
       - if: github.event.inputs.destroy_infra == 'false'
         name: Run Ansible Playbook
         run: |
-          ansible-playbook --inventory ${{ env.ANSIBLE_INVENTORY_FILE }} ansible_deploy_docker.yml
+          ansible-playbook --inventory ${{ env.ANSIBLE_INVENTORY_FILE }} ansible/ansible_deploy_docker.yml
 # --private-key /home/runner/monitoring.pem
 #/home/runner/monitoring.pem
 #${{ env.SSH_AUTH_SOCK }}

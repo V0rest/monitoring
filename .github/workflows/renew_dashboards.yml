@@ -8,8 +8,8 @@ env:
   INSTANCE_DEPLOY_PATH: /etc/monitoring
   REPO_DEPLOYMENT_PATH: /local_deployment
   GRAFANA_DASHBOARD_PATH: /grafana/provisioning/dashboards
-  ANSIBLE_INVENTORY_FILE: inventory.aws_ec2.yml
-  ANSIBLE_CONFIG: ansible.cfg
+  ANSIBLE_INVENTORY_FILE: ansible/inventory.aws_ec2.yml
+  ANSIBLE_CONFIG: ansible/ansible.cfg
 
 jobs:
   job:
@@ -69,7 +69,7 @@ jobs:
 
       - name: Run Ansible Playbook
         run: |
-          ansible-playbook --inventory ${{ env.ANSIBLE_INVENTORY_FILE }} ansible_update_dashboards.yml
+          ansible-playbook --inventory ${{ env.ANSIBLE_INVENTORY_FILE }} ansible/ansible_update_dashboards.yml
 
       - name: Send custom JSON data to Slack workflow
         if: always()
