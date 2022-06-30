@@ -74,7 +74,7 @@
       synchronize:
         src: /home/runner/work/monitoring/monitoring/local_deployment
         dest: /etc/monitoring
-      delegate_to: all
+#      delegate_to: all
 
 
 
