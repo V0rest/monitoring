@@ -152,6 +152,11 @@ jobs:
           ansible-galaxy collection install amazon.aws
 
       - if: github.event.inputs.destroy_infra == 'false'
+        name: Validate Ansible Inventory
+        run: |
+          ansible-inventory --inventory ${{ env.ANSIBLE_INVENTORY_FILE }} --list -vvvv
+
+      - if: github.event.inputs.destroy_infra == 'false'
         name: Ansible AD-HOC Synchronize dashboards with instance
         run: |
           ansible all -m synchronize -a "src=$GITHUB_WORKSPACE/local_deployment/ dest=${{ env.INSTANCE_DEPLOY_PATH }}" -i ${{ env.ANSIBLE_INVENTORY_FILE }} -b
@@ -164,10 +169,6 @@ jobs:
           ansible all -m shell -a "sed -i -e 's|SLACK_ALERT_CHANNEL|${{ secrets.SLACK_ALERT_CHANNEL }}|' ${{ env.INSTANCE_DEPLOY_PATH }}/alertmanager.yml" -i ${{ env.ANSIBLE_INVENTORY_FILE }} -b
 #"sed -i -e '$aGRAFANA_ADMIN_PASSWORD=${{ secrets.GRAFANA_ADMIN_PASSWORD }}' >> ${{ env.INSTANCE_DEPLOY_PATH }}/.env"
 
-      - if: github.event.inputs.destroy_infra == 'false'
-        name: Validate Ansible Inventory
-        run: |
-          ansible-inventory --inventory ${{ env.ANSIBLE_INVENTORY_FILE }} --list -vvvv
 
       - if: github.event.inputs.destroy_infra == 'false'
         name: Run Ansible Playbook
