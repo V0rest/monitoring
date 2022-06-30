@@ -5,9 +5,9 @@ route:
 receivers:
 - name: 'slack'
   slack_configs:
-  - api_url: 'https://hooks.slack.com/services/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'
+  - api_url: 'SLACK_ALERT_HOOK'
     username: 'Alertmanager'
-    channel: '#lviv-monitoring'
+    channel: '#SLACK_ALERT_CHANNEL'
     send_resolved: true
     title: |-
       [{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{ end }}] {{ .CommonLabels.alertname }} for {{ .CommonLabels.job }}
