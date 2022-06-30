@@ -70,11 +70,11 @@
         dest: /usr/local/bin/docker-compose
         mode: 'u+x,g+x'
 
-    - name: Synchronization with github
-      synchronize:
-        src: /home/runner/work/monitoring/monitoring/local_deployment
-        dest: /etc/monitoring
-#      delegate_to: all
+#    - name: Synchronization with github
+#      synchronize:
+#        src: /home/runner/work/monitoring/monitoring/local_deployment
+#        dest: /etc/monitoring
+##      delegate_to: all
 
 
 

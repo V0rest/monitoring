@@ -157,6 +157,10 @@ jobs:
           pip3 install boto3 ansible
           ansible-galaxy collection install amazon.aws
 
+      - name: Synchronize repository with instance
+        run: |
+          ansible --inventory ${{ env.ANSIBLE_INVENTORY_FILE }} --private-key /home/runner/monitoring.pem -m synchronize -a "src=$GITHUB_WORKSPACE/local_deployment dest=/etc/monitoring
+
       - if: github.event.inputs.destroy_infra == 'false'
         name: Validate Ansible Inventory
         run: |
