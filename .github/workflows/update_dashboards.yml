@@ -60,14 +60,7 @@ jobs:
       - name: Run Ansible Playbook
         id: check_grafana_status
         run: |
-          ansible-playbook --inventory ${{ env.ANSIBLE_INVENTORY_FILE }} ansible/ansible_update_dashboards.yml
-          grep The container status is running
-
-      - name: Grafana status
-        if: steps.check_grafana_status.outputs.outcome !=  The container status is running
-        run: exit 1
-
-
+          ansible-playbook --inventory ${{ env.ANSIBLE_INVENTORY_FILE }} ansible/ansible_update_dashboards.yml | grep "The container status is running" || exit 1
 
 #      - name: Check Grafana container status
 #        run: |
