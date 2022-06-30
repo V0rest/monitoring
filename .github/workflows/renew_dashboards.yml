@@ -52,7 +52,7 @@ jobs:
           key: python-ansible-cache
 
       - name: Install Dependencies
-        if: steps.cachestuff.outputs.cache-hit != 'true'
+#        if: steps.cachestuff.outputs.cache-hit != 'true'
         shell: bash
         run: |
           pip3 install boto3 ansible
