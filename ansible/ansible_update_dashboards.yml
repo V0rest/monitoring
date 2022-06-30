@@ -5,8 +5,8 @@
   become: yes
   tasks:
 
-    - name: Restart Grafana container
-      shell: docker restart grafana
+#    - name: Restart Grafana container
+#      shell: docker restart grafana
 
     - name: Get infos on container
       docker_container_info:
