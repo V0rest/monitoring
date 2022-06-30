@@ -20,6 +20,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_VITECH_CLOUD }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_VITECH_CLOUD }}
+          aws-region: ${{ env.AWS_REGION }}        
+
       - name: Write SSH Key to Disk
         shell: bash
         run: |
