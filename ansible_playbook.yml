@@ -72,7 +72,7 @@
 
     - name: Synchronization with github
       synchronize:
-        src: ${{ GITHUB_WORKSPACE }}/local_deployment
+        src: /home/runner/work/monitoring/monitoring/local_deployment
         dest: /etc/monitoring
       delegate_to: all
 
