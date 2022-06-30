@@ -57,7 +57,7 @@
     - name: Ensure Python pip packages are installed
       pip:
         name: "{{ packages }}"
-        executable: /usr/local/bin/pip3.8
+        executable: /usr/local/bin/pip3
       vars:
         packages:
         - boto
@@ -69,14 +69,6 @@
         url : https://github.com/docker/compose/releases/download/1.29.2/docker-compose-Linux-x86_64
         dest: /usr/local/bin/docker-compose
         mode: 'u+x,g+x'
-
-#    - name: Synchronization with github
-#      synchronize:
-#        src: /home/runner/work/monitoring/monitoring/local_deployment
-#        dest: /etc/monitoring
-##      delegate_to: all
-
-
 
     - name: Create and start services
       community.docker.docker_compose:

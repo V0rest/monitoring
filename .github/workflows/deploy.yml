@@ -25,10 +25,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: cat files
-        shell: bash
-        run: |
-          ls -la $GITHUB_WORKSPACE/local_deployment
 #
 #      - name: Configure AWS credentials
 #        uses: aws-actions/configure-aws-credentials@v1
@@ -146,8 +142,6 @@ jobs:
             ~/.ansible/
           key: python-ansible-cache
 
-
-
       - name: Install Dependencies
         if: |
          github.event.inputs.destroy_infra == 'false' ||
@@ -178,7 +172,7 @@ jobs:
       - if: github.event.inputs.destroy_infra == 'false'
         name: Run Ansible Playbook
         run: |
-          ansible-playbook --inventory ${{ env.ANSIBLE_INVENTORY_FILE }} ansible_playbook.yml
+          ansible-playbook --inventory ${{ env.ANSIBLE_INVENTORY_FILE }} ansible_deploy_docker.yml
 # --private-key /home/runner/monitoring.pem
 #/home/runner/monitoring.pem
 #${{ env.SSH_AUTH_SOCK }}
