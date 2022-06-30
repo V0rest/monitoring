@@ -58,13 +58,13 @@ jobs:
           pip3 install boto3 ansible
           ansible-galaxy collection install amazon.aws
 
-      - name: Validate Ansible Inventory
-        run: |
-          ansible-inventory --inventory ${{ env.ANSIBLE_INVENTORY_FILE }} --list -vvvv
-
       - name: Ansible AD-HOC Synchronize dashboards with instance
         run: |
           ansible all -m synchronize -a "src=$GITHUB_WORKSPACE{{ env.GRAFANA_DASHBOARD_PATH }}/ dest=${{ env.INSTANCE_DEPLOY_PATH }}{{ env.GRAFANA_DASHBOARD_PATH }}" -i ${{ env.ANSIBLE_INVENTORY_FILE }} -b
+
+      - name: Validate Ansible Inventory
+        run: |
+          ansible-inventory --inventory ${{ env.ANSIBLE_INVENTORY_FILE }} --list -vvvv
 
       - name: Run Ansible Playbook
         run: |
