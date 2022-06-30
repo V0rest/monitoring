@@ -75,4 +75,4 @@
         project_src: /etc/monitoring
         files:
         - docker-compose.yml
-      register: output
+      register: output      

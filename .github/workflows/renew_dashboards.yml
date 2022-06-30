@@ -68,8 +68,20 @@ jobs:
           ansible all -m synchronize -a "src=$GITHUB_WORKSPACE${{ env.REPO_DEPLOYMENT_PATH }}${{ env.GRAFANA_DASHBOARD_PATH }}/ dest=${{ env.INSTANCE_DEPLOY_PATH }}${{ env.GRAFANA_DASHBOARD_PATH }}" -i ${{ env.ANSIBLE_INVENTORY_FILE }} -b
 
       - name: Run Ansible Playbook
+        id: check_grafana_status
         run: |
           ansible-playbook --inventory ${{ env.ANSIBLE_INVENTORY_FILE }} ansible/ansible_update_dashboards.yml
+          echo "::set-output name=msg::$(job output msg | tr -d "\"")"
+
+#      - name: Grafana status
+#        if: steps.check_grafana_status.outcome != '"msg": "The container status is running"'
+#        run: exit 1
+
+
+
+#      - name: Check Grafana container status
+#        run: |
+#          ansible all -m {% if result.exists %}debug{% endif %} -a msg="{{ result.container['State']['Status' }}" -i ${{ env.ANSIBLE_INVENTORY_FILE }} -b
 
       - name: Send custom JSON data to Slack workflow
         if: always()
