@@ -173,6 +173,7 @@ jobs:
         name: Run Ansible Playbook
         run: |
           ansible-playbook --inventory ${{ env.ANSIBLE_INVENTORY_FILE }} ansible/ansible_deploy_docker.yml
+        #| grep "" || 
 # --private-key /home/runner/monitoring.pem
 #/home/runner/monitoring.pem
 #${{ env.SSH_AUTH_SOCK }}
