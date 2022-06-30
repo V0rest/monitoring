@@ -28,7 +28,7 @@ jobs:
       - name: cat files
         shell: bash
         run: |
-          cat ${{ GITHUB_WORKSPACE }}
+          cat $GITHUB_WORKSPACE
 #
 #      - name: Configure AWS credentials
 #        uses: aws-actions/configure-aws-credentials@v1
