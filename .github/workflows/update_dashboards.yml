@@ -12,7 +12,7 @@ env:
   ANSIBLE_CONFIG: ansible/ansible.cfg
 
 jobs:
-  job:
+  ansible:
     name: "Update Grafana Dashboards"
     runs-on: ubuntu-20.04
     environment: Prod
@@ -61,10 +61,10 @@ jobs:
         id: check_grafana_status
         run: |
           ansible-playbook --inventory ${{ env.ANSIBLE_INVENTORY_FILE }} ansible/ansible_update_dashboards.yml
-          echo "::set-output name=outcome::$(job output "msg": "The container status is running" )"
+          grep The container status is running
 
       - name: Grafana status
-        if: steps.check_grafana_status.outcome !=  '"msg": "The container status is running"'
+        if: steps.check_grafana_status.outputs.outcome !=  The container status is running
         run: exit 1
 
 
