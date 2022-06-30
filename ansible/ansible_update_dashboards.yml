@@ -6,10 +6,10 @@
   tasks:
 
     - name: Restart Grafana container
-      shell: docker restart grafana
+      shell: "docker restart grafana"
 
     - name: get container status
-      shell: docker ps -a -f name=grafana --format {%raw%}"table {{.Status}}"{%endraw%} | awk 'FNR == 2 {print}' | awk '{print $1}'
+      shell: "docker ps -a -f name=grafana --format {%raw%}"table {{.Status}}"{%endraw%} | awk 'FNR == 2 {print}' | awk '{print $1}'"
       register: status
 
     - name: Get infos on container
