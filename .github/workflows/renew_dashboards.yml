@@ -1,4 +1,4 @@
-name: Renew Grafana Dashboards
+name: Update Grafana Dashboards
 
 on:
   workflow_dispatch:
@@ -12,7 +12,7 @@ env:
 
 jobs:
   job:
-    name: "Renew Grafana Dashboards"
+    name: "Update Grafana Dashboards"
     runs-on: ubuntu-20.04
     environment: Prod
 
@@ -62,7 +62,7 @@ jobs:
         run: |
           ansible-inventory --inventory ${{ env.ANSIBLE_INVENTORY_FILE }} --list -vvvv
 
-      - name: Synchronize dashboards with instance
+      - name: Ansible AD-HOC Synchronize dashboards with instance
         run: |
           ansible all -m synchronize -a "src=$GITHUB_WORKSPACE{{ env.GRAFANA_DASHBOARD_PATH }}/ dest=${{ env.INSTANCE_DEPLOY_PATH }}{{ env.GRAFANA_DASHBOARD_PATH }}" -i ${{ env.ANSIBLE_INVENTORY_FILE }} -b
 
