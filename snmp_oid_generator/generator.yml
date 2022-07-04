@@ -49,3 +49,51 @@ modules:
     retries: 3
     auth:
      community: public
+
+##########UniFi##########
+  unifi_snmp:
+   walk:
+   - sysName
+   - sysObjectID
+   - sysDescr
+   - sysContact
+   - sysLocation
+   - sysUpTime
+   - unifiApSystemModel
+   - unifiApSystemVersion
+   - ifTable
+   - ifDescr
+   - unifiRadioTable
+   - unifiRadioName
+   - unifiRadioRadio
+   - unifiVapTable
+   - unifiVapName
+   - unifiVapRadio
+   - unifiVapEssId
+   - unifiIfTable
+   - unifiIfName
+   - snmpInPkts
+   - snmpInGetRequests
+   - snmpInGetNexts
+   - snmpInTotalReqVars
+   - snmpInGetResponses
+   - snmpOutPkts
+   - snmpOutGetRequests
+   - snmpOutGetNexts
+   - snmpOutGetResponses
+   - hrProcessorTable
+   - laTable
+   - laNames
+   - memTotalSwap
+   - memAvailSwap
+   - memTotalReal
+   - memAvailReal
+   - memTotalFree
+   - memShared
+   - memBuffer
+   - memCached
+   version: 2
+   max_repetitions: 25
+   retries: 3
+   auth:
+    community: public

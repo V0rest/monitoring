@@ -27,7 +27,7 @@
       shell: yum-config-manager --enable extras
 
     - name: Enable Some packages from amazon-linux-extras packages
-      shell: "amazon-linux-extras enable python3.8 ansible2 docker"
+      shell: "amazon-linux-extras enable python3 ansible2 docker"
 
     - name: clean yum metadata cache
       command: yum clean metadata
@@ -44,6 +44,16 @@
         - python3
         - ansible
         - docker
+
+    - name: Config Docker Daemon in /etc/docker/daemon.json
+      ansible.builtin.blockinfile:
+        create: yes
+        path: /etc/docker/daemon.json
+        block: |
+          {
+            "metrics-addr" : "0.0.0.0:9323",
+            "experimental" : true
+          }
 
     - name: Enable Docker CE service at startup
       service:
@@ -75,4 +85,4 @@
         project_src: /etc/monitoring
         files:
         - docker-compose.yml
-      register: output      
+#      register: output

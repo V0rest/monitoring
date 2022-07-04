@@ -14,21 +14,26 @@ rule_files:
 
 # A scrape configuration containing exactly one endpoint to scrape.
 scrape_configs:
+
+############################################
   - job_name: 'node_exporter'
     scrape_interval: 10s
-    static_configs:
-      - targets: ['node_exporter:9100']
-    relabel_configs:
-      - source_labels: [__address__]
-        regex: '.*'
-        target_label: instance
-        replacement: 'LocalHost'
+    metrics_path: /metrics
+    file_sd_configs:
+      - files:
+          - sd/node_exporter_targets.yml
+        refresh_interval: 1m
 
+############################################
   - job_name: 'cadvisor'
     scrape_interval: 10s
-    static_configs:
-      - targets: ['cadvisor:8080']
+#    metrics_path: /containers/
+    file_sd_configs:
+      - files:
+          - sd/cadvisor_targets.yml
+        refresh_interval: 1m
 
+############################################
   - job_name: 'prometheus'
     scrape_interval: 10s
     static_configs:
@@ -37,8 +42,9 @@ scrape_configs:
       - source_labels: [__address__]
         regex: '.*'
         target_label: instance
-        replacement: 'LocalHost'      
+        replacement: 'LocalHost'
 
+############################################
   - job_name: 'docker_exporter'
     scrape_interval: 10s
     static_configs:
@@ -49,14 +55,15 @@ scrape_configs:
         target_label: instance
         replacement: 'LocalHost'
 
+############################################
   - job_name: 'tplink_snmp_exporter'
-    scrape_interval: 1m
+    scrape_interval: 5m
     metrics_path: /snmp
     params:
       module: [tplink_snmp]
     file_sd_configs:
       - files:
-          - snmp/tplink_targets.yml
+          - sd/tplink_targets.yml
         refresh_interval: 1m
     relabel_configs:
     - source_labels: [__address__]
@@ -66,6 +73,7 @@ scrape_configs:
     - target_label: __address__
       replacement: snmp_exporter:9116
 
+############################################
   - job_name: 'fortigate_snmp_exporter'
     scrape_interval: 5m
     metrics_path: /snmp
@@ -73,7 +81,7 @@ scrape_configs:
       module: [fortigate_snmp]
     file_sd_configs:
       - files:
-          - snmp/fortinet_targets.yml
+          - sd/fortinet_targets.yml
         refresh_interval: 1m
     relabel_configs:
     - source_labels: [__address__]
@@ -83,6 +91,25 @@ scrape_configs:
     - target_label: __address__
       replacement: snmp_exporter:9116
 
+############################################
+  - job_name: 'unifi_snmp_exporter'
+    scrape_interval: 5m
+    metrics_path: /snmp
+    params:
+      module: [fortigate_snmp]
+    file_sd_configs:
+      - files:
+          - sd/unifi_targets.yml
+        refresh_interval: 1m
+    relabel_configs:
+    - source_labels: [__address__]
+      target_label: __param_target
+    - source_labels: [__param_target]
+      target_label: instance
+    - target_label: __address__
+      replacement: snmp_exporter:9116
+
+############################################
 #  - job_name: cloudwatch-exporter
 #    honor_labels: true
 #    metrics_path: '/metrics'
@@ -90,6 +117,7 @@ scrape_configs:
 #      - targets: ['cloudwatch-exporter:9106']
 
 
+############################################
   - job_name: 'blackbox_icmp_prober'
     scrape_interval: 5s
     metrics_path: /probe
@@ -97,15 +125,16 @@ scrape_configs:
       module: [icmp]
     file_sd_configs:
       - files:
-          - blackbox/blackbox_targets.yml
+          - sd/blackbox_targets.yml
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target
       - source_labels: [__param_target]
         target_label: instance
       - target_label: __address__
-        replacement: blackbox:9115  # This is your blackbox exporter.
+        replacement: blackbox:9115
 
+############################################
 alerting:
   alertmanagers:
   - scheme: http

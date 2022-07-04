@@ -62,10 +62,6 @@ jobs:
         run: |
           ansible-playbook --inventory ${{ env.ANSIBLE_INVENTORY_FILE }} ansible/ansible_update_dashboards.yml | grep "The container status is running" || exit 1
 
-#      - name: Check Grafana container status
-#        run: |
-#          ansible all -m {% if result.exists %}debug{% endif %} -a msg="{{ result.container['State']['Status' }}" -i ${{ env.ANSIBLE_INVENTORY_FILE }} -b
-
       - name: Send custom JSON data to Slack workflow
         if: always()
         id: slack

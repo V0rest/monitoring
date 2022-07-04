@@ -1,7 +1,7 @@
-# Ansible playbook AWS - install docker & docker-compose
+# Ansible playbook AWS - update grafana dashboards
 
 - name: "AWS - Install docker"
-  hosts: all #awsec2instances #Ansible #
+  hosts: all
   become: yes
   tasks:
 

@@ -1,4 +1,4 @@
-
+{
   "annotations": {
     "list": [
       {
@@ -25,7 +25,7 @@
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
   "id": 19,
-  "iteration": 1656513309994,
+  "iteration": 1656785293217,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -109,7 +109,7 @@
         "showThresholdLabels": false,
         "showThresholdMarkers": true
       },
-      "pluginVersion": "9.0.1",
+      "pluginVersion": "9.0.2",
       "targets": [
         {
           "datasource": {
@@ -199,7 +199,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.0.1",
+      "pluginVersion": "9.0.2",
       "targets": [
         {
           "datasource": {
@@ -240,8 +240,8 @@
               "viz": false
             },
             "lineInterpolation": "smooth",
-            "lineWidth": 2,
-            "pointSize": 2,
+            "lineWidth": 1,
+            "pointSize": 3,
             "scaleDistribution": {
               "type": "linear"
             },
@@ -269,7 +269,7 @@
               }
             ]
           },
-          "unit": "Bps"
+          "unit": "binBps"
         },
         "overrides": []
       },
@@ -305,7 +305,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "rate(ifHCInOctets{hostname=~\"$hostname\",ifName=~\"$ifName\",job=\"tplink_snmp_exporter\"}[2m])!=0",
+          "expr": "irate(ifHCInOctets{hostname=~\"$hostname\",ifName=~\"$ifName\",job=\"tplink_snmp_exporter\"}[5m])*8!=0",
           "format": "time_series",
           "instant": false,
           "interval": "",
@@ -349,8 +349,8 @@
               "viz": false
             },
             "lineInterpolation": "smooth",
-            "lineWidth": 2,
-            "pointSize": 2,
+            "lineWidth": 1,
+            "pointSize": 3,
             "scaleDistribution": {
               "type": "linear"
             },
@@ -378,7 +378,7 @@
               }
             ]
           },
-          "unit": "Bps"
+          "unit": "binBps"
         },
         "overrides": []
       },
@@ -414,7 +414,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "rate(ifHCOutOctets{hostname=~\"$hostname\",ifName=~\"$ifName\",job=\"tplink_snmp_exporter\"}[2m])!=0",
+          "expr": "irate(ifHCOutOctets{hostname=~\"$hostname\",ifName=~\"$ifName\",job=\"tplink_snmp_exporter\"}[5m])*8!=0",
           "format": "time_series",
           "instant": false,
           "interval": "",
@@ -450,7 +450,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "#EAB839",
@@ -485,7 +486,7 @@
         "showThresholdLabels": false,
         "showThresholdMarkers": true
       },
-      "pluginVersion": "9.0.1",
+      "pluginVersion": "9.0.2",
       "targets": [
         {
           "datasource": {
@@ -530,7 +531,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               }
             ]
           },
@@ -557,7 +559,7 @@
         "showThresholdLabels": false,
         "showThresholdMarkers": true
       },
-      "pluginVersion": "9.0.1",
+      "pluginVersion": "9.0.2",
       "targets": [
         {
           "datasource": {
@@ -621,10 +623,10 @@
         "current": {
           "selected": true,
           "text": [
-            "IF-switch-1"
+            "All"
           ],
           "value": [
-            "IF-switch-1"
+            "$__all"
           ]
         },
         "datasource": {
@@ -713,13 +715,13 @@
     ]
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-24h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Switches",
   "uid": "eMjTnAqnz",
-  "version": 34,
+  "version": 39,
   "weekStart": ""
 }

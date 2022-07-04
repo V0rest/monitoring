@@ -1,0 +1,82 @@
+############################
+- targets: ["192.168.211.31"]
+  labels:
+    hostname: LV-WiFi-1
+############################
+- targets: ["192.168.211.32"]
+  labels:
+    hostname: LV-WiFi-2
+############################
+- targets: ["192.168.211.33"]
+  labels:
+    hostname: LV-WiFi-3
+############################
+- targets: ["192.168.211.34"]
+  labels:
+    hostname: LV-WiFi-4
+############################
+- targets: ["192.168.211.35"]
+  labels:
+    hostname: LV-WiFi-5
+############################
+- targets: ["192.168.211.36"]
+  labels:
+    hostname: LV-WiFi-6
+############################
+- targets: ["192.168.211.37"]
+  labels:
+    hostname: LV-WiFi-7
+############################
+- targets: ["192.168.211.38"]
+  labels:
+    hostname: LV-WiFi-8
+############################
+- targets: ["192.168.211.39"]
+  labels:
+    hostname: LV-WiFi-9-MultiHall
+############################
+- targets: ["192.168.211.40"]
+  labels:
+    hostname: LV-WiFi-10-Hall-1
+############################
+- targets: ["192.168.211.41"]
+  labels:
+    hostname: LV-WiFi-11-Hall-2
+############################
+############################
+- targets: ["192.168.97.11"]
+  labels:
+    hostname: IF-WiFi-1-Kitchen
+############################
+- targets: ["192.168.97.12"]
+  labels:
+    hostname: IF-WiFi-2-Work-Space 2
+############################
+- targets: ["192.168.97.13"]
+  labels:
+    hostname: IF-WiFi-3-Work-Space 2
+############################
+- targets: ["192.168.97.14"]
+  labels:
+    hostname: IF-WiFi-4-Work-Space 1
+############################
+- targets: ["192.168.97.15"]
+  labels:
+    hostname: IF-WiFi-5-Work-Space 1
+############################
+- targets: ["192.168.97.16"]
+  labels:
+    hostname: IF-WiFi-6-Work-Space 3
+############################
+- targets: ["192.168.97.17"]
+  labels:
+    hostname: IF-WiFi-7-Work-Space 3
+############################
+- targets: ["192.168.97.18"]
+  labels:
+    hostname: IF-WiFi-8-Work-Space 3
+############################
+- targets: ["192.168.97.19"]
+  labels:
+    hostname: IF-WiFi-9-Sport-Room
+############################

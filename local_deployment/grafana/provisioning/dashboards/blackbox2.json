@@ -27,7 +27,7 @@
   "gnetId": 7587,
   "graphTooltip": 0,
   "id": 6,
-  "iteration": 1656513440741,
+  "iteration": 1656785192729,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -80,7 +80,7 @@
         },
         "showUnfilled": true
       },
-      "pluginVersion": "9.0.1",
+      "pluginVersion": "9.0.2",
       "targets": [
         {
           "datasource": {
@@ -184,7 +184,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.0.1",
+      "pluginVersion": "9.0.2",
       "repeatDirection": "v",
       "targets": [
         {
@@ -263,7 +263,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.0.1",
+      "pluginVersion": "9.0.2",
       "targets": [
         {
           "datasource": {
@@ -459,7 +459,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.0.1",
+      "pluginVersion": "9.0.2",
       "repeatDirection": "v",
       "targets": [
         {
@@ -538,7 +538,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.0.1",
+      "pluginVersion": "9.0.2",
       "targets": [
         {
           "datasource": {
@@ -830,6 +830,6 @@
   "timezone": "",
   "title": "Prometheus Blackbox Exporter",
   "uid": "xtkCtBkiz",
-  "version": 7,
+  "version": 24,
   "weekStart": ""
 }

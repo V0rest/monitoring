@@ -27,7 +27,7 @@
   "gnetId": 13659,
   "graphTooltip": 0,
   "id": 14,
-  "iteration": 1656513146308,
+  "iteration": 1656785365489,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -201,7 +201,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "9.0.1",
+      "pluginVersion": "9.0.2",
       "repeatDirection": "h",
       "targets": [
         {
@@ -430,8 +430,9 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "probe_icmp_duration_seconds{hostname=~\"$hostname\", phase=\"rtt\"}/10",
-          "refId": "A"
+          "expr": "rate (probe_icmp_duration_seconds{hostname=~\"$hostname\", phase=\"rtt\"}[5m]) ",
+          "hide": false,
+          "refId": "B"
         }
       ],
       "title": "ICMP Probe",
@@ -524,6 +525,6 @@
   "timezone": "",
   "title": "Blackbox Exporter (ICMP prober)",
   "uid": "NEzutrbMk",
-  "version": 22,
+  "version": 24,
   "weekStart": ""
 }

@@ -3,7 +3,10 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": "-- Grafana --",
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -23,12 +26,16 @@
   "fiscalYearStartMonth": 0,
   "gnetId": 1229,
   "graphTooltip": 0,
-  "id": 7,
-  "iteration": 1655474927183,
+  "id": 4,
+  "iteration": 1656785027233,
   "links": [],
   "liveNow": false,
   "panels": [
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
       "description": "",
       "gridPos": {
         "h": 3,
@@ -42,8 +49,17 @@
         "content": "",
         "mode": "markdown"
       },
-      "pluginVersion": "8.4.5",
+      "pluginVersion": "9.0.2",
       "repeat": "instance",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "refId": "A"
+        }
+      ],
       "title": "$instance",
       "type": "text"
     },
@@ -109,10 +125,14 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "8.4.5",
+      "pluginVersion": "9.0.2",
       "repeat": "instance",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "expr": "engine_daemon_engine_cpus_cpus{instance=~'$instance'}",
           "intervalFactor": 2,
           "legendFormat": "",
@@ -164,7 +184,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.4.5",
+      "pluginVersion": "9.0.2",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -175,6 +195,10 @@
       "steppedLine": false,
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "expr": "histogram_quantile(0.99, rate(engine_daemon_container_actions_seconds_bucket{instance=~'$instance'}[$interval]))",
           "intervalFactor": 2,
           "legendFormat": "{{action}} 99",
@@ -182,6 +206,10 @@
           "step": 4
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "expr": "histogram_quantile(0.90, rate(engine_daemon_container_actions_seconds_bucket{instance=~'$instance'}[$interval]))",
           "intervalFactor": 2,
           "legendFormat": "{{action}} 90",
@@ -189,6 +217,10 @@
           "step": 4
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "expr": "histogram_quantile(0.50, rate(engine_daemon_container_actions_seconds_bucket{instance=~'$instance'}[$interval]))",
           "intervalFactor": 2,
           "legendFormat": "{{action}} 50",
@@ -196,6 +228,10 @@
           "step": 4
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "expr": "histogram_quantile(0.25, rate(engine_daemon_container_actions_seconds_bucket{instance=~'$instance'}[$interval]))",
           "intervalFactor": 2,
           "legendFormat": "{{action}} 25",
@@ -271,7 +307,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.4.5",
+      "pluginVersion": "9.0.2",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -282,6 +318,10 @@
       "steppedLine": false,
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "expr": "engine_daemon_container_actions_seconds_count{instance=~'$instance'}",
           "intervalFactor": 2,
           "legendFormat": "{{action}}",
@@ -360,7 +400,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.4.5",
+      "pluginVersion": "9.0.2",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -371,6 +411,10 @@
       "steppedLine": false,
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "expr": "histogram_quantile(0.99, rate(engine_daemon_network_actions_seconds_bucket{instance=~'$instance'}[$interval]))",
           "intervalFactor": 2,
           "legendFormat": "{{action}} 99",
@@ -378,6 +422,10 @@
           "step": 4
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "expr": "histogram_quantile(0.90, rate(engine_daemon_network_actions_seconds_bucket{instance=~'$instance'}[$interval]))",
           "intervalFactor": 2,
           "legendFormat": "{{action}} 90",
@@ -385,6 +433,10 @@
           "step": 4
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "expr": "histogram_quantile(0.50, rate(engine_daemon_network_actions_seconds_bucket{instance=~'$instance'}[$interval]))",
           "intervalFactor": 2,
           "legendFormat": "{{action}} 50",
@@ -392,6 +444,10 @@
           "step": 4
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "expr": "histogram_quantile(0.25, rate(engine_daemon_network_actions_seconds_bucket{instance=~'$instance'}[$interval]))",
           "intervalFactor": 2,
           "legendFormat": "{{action}} 25",
@@ -467,7 +523,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.4.5",
+      "pluginVersion": "9.0.2",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -478,6 +534,10 @@
       "steppedLine": false,
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "expr": "engine_daemon_network_actions_seconds_count{instance=~'$instance'}",
           "intervalFactor": 2,
           "legendFormat": "{{action}}",
@@ -556,7 +616,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.4.5",
+      "pluginVersion": "9.0.2",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -567,6 +627,10 @@
       "steppedLine": false,
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "expr": "histogram_quantile(0.99, rate(etcd_disk_wal_fsync_duration_seconds_bucket{instance=~'$instance'}[$interval]))",
           "intervalFactor": 2,
           "legendFormat": "99",
@@ -574,6 +638,10 @@
           "step": 4
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "expr": "histogram_quantile(0.90, rate(etcd_disk_wal_fsync_duration_seconds_bucket{instance=~'$instance'}[$interval]))",
           "intervalFactor": 2,
           "legendFormat": "90",
@@ -581,6 +649,10 @@
           "step": 4
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "expr": "histogram_quantile(0.50, rate(etcd_disk_wal_fsync_duration_seconds_bucket{instance=~'$instance'}[$interval]))",
           "intervalFactor": 2,
           "legendFormat": "50",
@@ -588,6 +660,10 @@
           "step": 4
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "expr": "histogram_quantile(0.10, rate(etcd_disk_wal_fsync_duration_seconds_bucket{instance=~'$instance'}[$interval]))",
           "intervalFactor": 2,
           "legendFormat": "10",
@@ -663,7 +739,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.4.5",
+      "pluginVersion": "9.0.2",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -674,6 +750,10 @@
       "steppedLine": false,
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "expr": "engine_daemon_events_subscribers_total{instance=~'$instance'}",
           "intervalFactor": 2,
           "legendFormat": " ",
@@ -750,7 +830,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.4.5",
+      "pluginVersion": "9.0.2",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -761,6 +841,10 @@
       "steppedLine": false,
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "expr": "builder_builds_triggered_total{instance=~'$instance'}",
           "hide": false,
           "intervalFactor": 2,
@@ -769,6 +853,10 @@
           "step": 4
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "expr": "sum(builder_builds_failed_total{instance=~'$instance'}) by (instance)",
           "hide": false,
           "intervalFactor": 2,
@@ -809,7 +897,7 @@
     }
   ],
   "refresh": "5s",
-  "schemaVersion": 35,
+  "schemaVersion": 36,
   "style": "dark",
   "tags": [
     "docker",
@@ -824,15 +912,15 @@
         "auto_min": "10s",
         "current": {
           "selected": false,
-          "text": "auto",
-          "value": "$__auto_interval_interval"
+          "text": "12h",
+          "value": "12h"
         },
         "hide": 0,
         "label": "Interval",
         "name": "interval",
         "options": [
           {
-            "selected": true,
+            "selected": false,
             "text": "auto",
             "value": "$__auto_interval_interval"
           },
@@ -887,7 +975,7 @@
             "value": "6h"
           },
           {
-            "selected": false,
+            "selected": true,
             "text": "12h",
             "value": "12h"
           },
@@ -913,6 +1001,7 @@
           }
         ],
         "query": "30s,1m,2m,3m,5m,7m,10m,30m,1h,6h,12h,1d,7d,14d,30d",
+        "queryValue": "",
         "refresh": 2,
         "skipUrlSync": false,
         "type": "interval"
@@ -920,8 +1009,8 @@
       {
         "current": {
           "selected": false,
-          "text": "All",
-          "value": "$__all"
+          "text": "LocalHost",
+          "value": "LocalHost"
         },
         "datasource": {
           "type": "prometheus",
@@ -929,9 +1018,9 @@
         },
         "definition": "",
         "hide": 0,
-        "includeAll": true,
+        "includeAll": false,
         "label": "Instance",
-        "multi": true,
+        "multi": false,
         "name": "instance",
         "options": [],
         "query": {
@@ -979,6 +1068,6 @@
   "timezone": "browser",
   "title": "Docker Engine Metrics",
   "uid": "zIFh5oB7z",
-  "version": 6,
+  "version": 4,
   "weekStart": ""
 }

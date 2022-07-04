@@ -16,7 +16,7 @@ env:
   ANSIBLE_INVENTORY_FILE: ansible/inventory.aws_ec2.yml
   ANSIBLE_CONFIG: ansible/ansible.cfg
 jobs:
-  terraform:
+  job:
     name: "Deploy"
     runs-on: ubuntu-20.04
     environment: Prod
@@ -43,7 +43,7 @@ jobs:
           echo "region = ${{ secrets.AWS_DEFAULT_REGION }}" >> ~/.aws/config
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
+        uses: hashicorp/setup-terraform@v2.0.0
         with:
           terraform_wrapper: false
 
@@ -158,6 +158,7 @@ jobs:
       - if: github.event.inputs.destroy_infra == 'false'
         name: Ansible AD-HOC Synchronize dashboards with instance
         run: |
+          ansible all -m file -a "dest=${{ env.INSTANCE_DEPLOY_PATH }} mode=755 owner=ec2-user group=ec2-user state=directory" -i ${{ env.ANSIBLE_INVENTORY_FILE }} -b
           ansible all -m synchronize -a "src=$GITHUB_WORKSPACE/local_deployment/ dest=${{ env.INSTANCE_DEPLOY_PATH }}" -i ${{ env.ANSIBLE_INVENTORY_FILE }} -b
 
       - if: github.event.inputs.destroy_infra == 'false'
@@ -166,14 +167,17 @@ jobs:
           ansible all -m shell -a "sed -i 's/GRAFANA_ADMIN_PASSWORD=.*/GRAFANA_ADMIN_PASSWORD=${{ secrets.GRAFANA_ADMIN_PASSWORD }}/g' ${{ env.INSTANCE_DEPLOY_PATH }}/.env" -i ${{ env.ANSIBLE_INVENTORY_FILE }} -b
           ansible all -m shell -a "sed -i -e 's|SLACK_ALERT_HOOK|${{ secrets.SLACK_WEBHOOK_URL }}|' ${{ env.INSTANCE_DEPLOY_PATH }}/alertmanager.yml" -i ${{ env.ANSIBLE_INVENTORY_FILE }} -b
           ansible all -m shell -a "sed -i -e 's|SLACK_ALERT_CHANNEL|${{ secrets.SLACK_ALERT_CHANNEL }}|' ${{ env.INSTANCE_DEPLOY_PATH }}/alertmanager.yml" -i ${{ env.ANSIBLE_INVENTORY_FILE }} -b
-#"sed -i -e '$aGRAFANA_ADMIN_PASSWORD=${{ secrets.GRAFANA_ADMIN_PASSWORD }}' >> ${{ env.INSTANCE_DEPLOY_PATH }}/.env"
-
 
       - if: github.event.inputs.destroy_infra == 'false'
         name: Run Ansible Playbook
         run: |
           ansible-playbook --inventory ${{ env.ANSIBLE_INVENTORY_FILE }} ansible/ansible_deploy_docker.yml
-        #| grep "" || 
+
+      - if: github.event.inputs.destroy_infra == 'false'
+        name: Check Number of Docker Containers
+        run: |
+          ansible all -m shell -a "docker ps -a --format '{{.Names}}' | wc -l"  -i ${{ env.ANSIBLE_INVENTORY_FILE }} -b | grep "7" || exit 1
+
 # --private-key /home/runner/monitoring.pem
 #/home/runner/monitoring.pem
 #${{ env.SSH_AUTH_SOCK }}

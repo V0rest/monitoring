@@ -27,7 +27,7 @@
   "gnetId": 7567,
   "graphTooltip": 0,
   "id": 9,
-  "iteration": 1656513240981,
+  "iteration": 1656785067222,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -122,14 +122,14 @@
         "showThresholdLabels": false,
         "showThresholdMarkers": true
       },
-      "pluginVersion": "9.0.1",
+      "pluginVersion": "9.0.2",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "fgSysCpuUsage{hostname=~\"$hostname\"}",
+          "expr": "fgSysCpuUsage{hostname=~\"$hostname\",job=\"fortigate_snmp_exporter\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A"
@@ -203,14 +203,14 @@
         "showThresholdLabels": false,
         "showThresholdMarkers": true
       },
-      "pluginVersion": "9.0.1",
+      "pluginVersion": "9.0.2",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "fgSysMemUsage{hostname=~\"$hostname\"}",
+          "expr": "fgSysMemUsage{hostname=~\"$hostname\",job=\"fortigate_snmp_exporter\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A"
@@ -281,7 +281,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.0.1",
+      "pluginVersion": "9.0.2",
       "targets": [
         {
           "datasource": {
@@ -364,14 +364,14 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.0.1",
+      "pluginVersion": "9.0.2",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "irate(ifHCInOctets{hostname=~\"$hostname\"}[30m]) * on (ifIndex) group_left(ifName) ifName{hostname=~\"$hostname\",ifName=\"wan1\"}",
+          "expr": "irate(ifHCInOctets{hostname=~\"$hostname\",job=\"fortigate_snmp_exporter\"}[30m]) * on (ifIndex) group_left(ifName) ifName{hostname=~\"$hostname\",ifName=\"wan1\",job=\"fortigate_snmp_exporter\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A"
@@ -445,14 +445,14 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.0.1",
+      "pluginVersion": "9.0.2",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "irate(ifHCInOctets{hostname=~\"$hostname\"}[30m]) * on (ifIndex) group_left(ifName) ifName{hostname=~\"$hostname\",ifName=\"wan2\"}",
+          "expr": "irate(ifHCInOctets{hostname=~\"$hostname\",job=\"fortigate_snmp_exporter\"}[30m]) * on (ifIndex) group_left(ifName) ifName{hostname=~\"$hostname\",ifName=\"wan2\",job=\"fortigate_snmp_exporter\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A"
@@ -518,7 +518,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.0.1",
+      "pluginVersion": "9.0.2",
       "targets": [
         {
           "datasource": {
@@ -606,7 +606,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.0.1",
+      "pluginVersion": "9.0.2",
       "targets": [
         {
           "datasource": {
@@ -684,14 +684,14 @@
         },
         "textMode": "name"
       },
-      "pluginVersion": "9.0.1",
+      "pluginVersion": "9.0.2",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "fgSysVersion{hostname=~\"$hostname\"}",
+          "expr": "fgSysVersion{hostname=~\"$hostname\",job=\"fortigate_snmp_exporter\"}",
           "format": "time_series",
           "instant": false,
           "intervalFactor": 1,
@@ -767,14 +767,14 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.0.1",
+      "pluginVersion": "9.0.2",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "irate(ifHCOutOctets{hostname=~\"$hostname\"}[30m]) * on (ifIndex) group_left(ifName) ifName{hostname=~\"$hostname\",ifName=\"wan1\"}",
+          "expr": "irate(ifHCOutOctets{hostname=~\"$hostname\",job=\"fortigate_snmp_exporter\"}[30m]) * on (ifIndex) group_left(ifName) ifName{hostname=~\"$hostname\",ifName=\"wan1\",job=\"fortigate_snmp_exporter\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A"
@@ -848,14 +848,14 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.0.1",
+      "pluginVersion": "9.0.2",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "irate(ifHCOutOctets{hostname=~\"$hostname\"}[30m]) * on (ifIndex) group_left(ifName) ifName{hostname=~\"$hostname\",ifName=\"wan2\"}",
+          "expr": "irate(ifHCOutOctets{hostname=~\"$hostname\",job=\"fortigate_snmp_exporter\"}[30m]) * on (ifIndex) group_left(ifName) ifName{hostname=~\"$hostname\",ifName=\"wan2\",job=\"fortigate_snmp_exporter\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A"
@@ -964,7 +964,7 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "sum(fgSysCpuUsage{hostname=~\"$hostname\"}) / count(fgSysCpuUsage{hostname=~\"$hostname\"})",
+          "expr": "sum(fgSysCpuUsage{hostname=~\"$hostname\",job=\"fortigate_snmp_exporter\"}) / count(fgSysCpuUsage{hostname=~\"$hostname\",job=\"fortigate_snmp_exporter\"})",
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A"
@@ -1074,7 +1074,7 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "fgSysMemUsage{hostname=~\"$hostname\"}",
+          "expr": "fgSysMemUsage{hostname=~\"$hostname\",job=\"fortigate_snmp_exporter\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A"
@@ -1209,7 +1209,7 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "rate(ifHCInOctets{hostname=~\"$hostname\"}[10m]) * on (ifIndex) group_left(ifName) ifName{hostname=~\"$hostname\",ifName=\"wan1\"}",
+          "expr": "rate(ifHCInOctets{hostname=~\"$hostname\",job=\"fortigate_snmp_exporter\"}[10m]) * on (ifIndex) group_left(ifName) ifName{hostname=~\"$hostname\",ifName=\"wan1\",job=\"fortigate_snmp_exporter\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A"
@@ -1315,7 +1315,7 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "rate(ifHCOutOctets{hostname=~\"$hostname\"}[10m]) * on (ifIndex) group_left(ifName) ifName{hostname=~\"$hostname\",ifName=\"wan1\"}",
+          "expr": "rate(ifHCOutOctets{hostname=~\"$hostname\",job=\"fortigate_snmp_exporter\"}[10m]) * on (ifIndex) group_left(ifName) ifName{hostname=~\"$hostname\",ifName=\"wan1\",job=\"fortigate_snmp_exporter\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A"
@@ -1421,7 +1421,7 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "rate(ifHCInOctets{hostname=~\"$hostname\"}[10m]) * on (ifIndex) group_left(ifName) ifName{hostname=~\"$hostname\",ifName=\"wan2\"}",
+          "expr": "rate(ifHCInOctets{hostname=~\"$hostname\",job=\"fortigate_snmp_exporter\"}[10m]) * on (ifIndex) group_left(ifName) ifName{hostname=~\"$hostname\",ifName=\"wan2\",job=\"fortigate_snmp_exporter\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A"
@@ -1527,7 +1527,7 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "rate(ifHCOutOctets{hostname=~\"$hostname\"}[10m]) * on (ifIndex) group_left(ifName) ifName{hostname=~\"$hostname\",ifName=\"wan2\"}",
+          "expr": "rate(ifHCOutOctets{hostname=~\"$hostname\",job=\"fortigate_snmp_exporter\"}[10m]) * on (ifIndex) group_left(ifName) ifName{hostname=~\"$hostname\",ifName=\"wan2\",job=\"fortigate_snmp_exporter\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A"
@@ -1633,7 +1633,7 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "rate(ifHCInOctets{hostname=~\"$hostname\"}[10m]) * on (ifIndex) group_left(ifName) ifName{hostname=~\"$hostname\",ifName=\"lan\"}",
+          "expr": "rate(ifHCInOctets{hostname=~\"$hostname\",job=\"fortigate_snmp_exporter\"}[10m]) * on (ifIndex) group_left(ifName) ifName{hostname=~\"$hostname\",ifName=\"lan\",job=\"fortigate_snmp_exporter\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A"
@@ -1739,7 +1739,7 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "rate(ifHCOutOctets{hostname=~\"$hostname\"}[10m]) * on (ifIndex) group_left(ifName) ifName{hostname=~\"$hostname\",ifName=\"lan\"}",
+          "expr": "rate(ifHCOutOctets{hostname=~\"$hostname\",job=\"fortigate_snmp_exporter\"}[10m]) * on (ifIndex) group_left(ifName) ifName{hostname=~\"$hostname\",ifName=\"lan\",job=\"fortigate_snmp_exporter\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A"
@@ -1839,7 +1839,7 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "topk(10,rate( ifHCInOctets{hostname=~\"$hostname\"}[10m]) * on (ifIndex) group_left(ifName) ifName{hostname=~\"$hostname\"})\n",
+          "expr": "topk(10,rate( ifHCInOctets{hostname=~\"$hostname\",job=\"fortigate_snmp_exporter\"}[10m]) * on (ifIndex) group_left(ifName) ifName{hostname=~\"$hostname\",job=\"fortigate_snmp_exporter\"})\n",
           "format": "time_series",
           "instant": false,
           "intervalFactor": 1,
@@ -1966,7 +1966,7 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "topk(10,rate( ifHCOutOctets{hostname=~\"$hostname\"}[10m]) * on (ifIndex) group_left(ifName) ifName{hostname=~\"$hostname\"})",
+          "expr": "topk(10,rate( ifHCOutOctets{hostname=~\"$hostname\",job=\"fortigate_snmp_exporter\"}[10m]) * on (ifIndex) group_left(ifName) ifName{hostname=~\"$hostname\",job=\"fortigate_snmp_exporter\"})",
           "format": "time_series",
           "instant": false,
           "intervalFactor": 1,
@@ -2674,6 +2674,6 @@
   "timezone": "",
   "title": "Fortigate",
   "uid": "jNUaY95iz",
-  "version": 39,
+  "version": 41,
   "weekStart": ""
 }
